@@ -1,7 +1,35 @@
 body {
-    font-family: Arial;
+  font-family: Arial;
 }
 
 h1 {
     text-align: center;
+}
+
+.header {
+  text-align: center;
+}
+
+#column1 {
+  width: 33%;
+}
+
+#column2 {
+  width: 33%;
+}
+#column3 {
+  width: 33%;
+}
+
+.flex-container {
+  
+  display: flex;
+  flex-direction: row;
+  
+}
+
+.column {
+  display: flex;
+  flex-direction: column;
+
 }

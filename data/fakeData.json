@@ -1,0 +1,91 @@
+{
+  "nodes": [
+    {
+      "id": 2.0,
+      "acousticness": 0.416675233,
+      "danceability": 0.675893985,
+      "energy": 0.634476268,
+      "instrumentalness": 0.010628068,
+      "liveness": 0.177646571,
+      "speechiness": 0.159310065,
+      "tempo": 165.922,
+      "valence": 0.576660988,
+      "listens": 6073.0,
+      "genre_top": "Hip-Hop",
+      "track_listens": 1293.0
+    },
+
+    {
+      "id":18222.0,
+      "acousticness":0.259400262,
+      "danceability":0.606185522,
+      "energy":0.436073977,
+      "instrumentalness":0.04272272,
+      "liveness":0.413009096,
+      "speechiness":0.34314175,
+      "tempo":165.956,
+      "valence":0.597746639,
+      "listens":4840.0,
+      "genre_top":"Hip-Hop",
+      "track_listens":509.0},
+
+    {
+      "id":26228.0,
+      "acousticness":0.311765036,
+      "danceability":0.591859947,
+      "energy":0.96237065,
+      "instrumentalness":0.159030441,
+      "liveness":0.061919622,
+      "speechiness":0.050839966,
+      "tempo":166.022,
+      "valence":0.756383632,
+      "listens":691.0,
+      "genre_top":null,
+      "track_listens":691.0},
+
+    {
+      "id":12369.0,
+      "acousticness":0.024435173,
+      "danceability":0.56715818,
+      "energy":0.398655044,
+      "instrumentalness":0.0000000107,
+      "liveness":0.147011069,
+      "speechiness":0.086146125,
+      "tempo":165.945,
+      "valence":0.485756185,
+      "listens":9705.0,
+      "genre_top":"Hip-Hop",
+      "track_listens":530.0}
+
+
+
+  ], 
+  
+  "links": [
+    {
+      "Source": 2.0,
+      "Target": 18222.0,
+      "Value": 0.400971861
+    },
+    {
+      "Source": 2.0,
+      "Target": 26228.0,
+      "Value": 0.4637505546
+    },
+    {
+      "Source": 2.0,
+      "Target": 12369.0,
+      "Value": 0.4862967454
+    },
+    {
+      "Source": 2.0,
+      "Target": 70717.0,
+      "Value": 0.5668190375
+    },
+    {
+      "Source": 2.0,
+      "Target": 80244.0,
+      "Value": 0.5795446706
+    }
+  ]
+}

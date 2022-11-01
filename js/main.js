@@ -1,4 +1,7 @@
 
+//Networks Graph Reference: https://observablehq.com/@d3/force-directed-graph
+//Spider Chart Reference: https://d3-graph-gallery.com/spider
+
 // ----------CONSTANTS FOR PAGE SETUP----------------
 const FRAME_HEIGHT = 500;
 const FRAME_WIDTH = 500; 

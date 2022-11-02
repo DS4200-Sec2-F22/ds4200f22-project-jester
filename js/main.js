@@ -134,12 +134,15 @@ function node_hover_out(event, d) {
 function submitClicked() {
   const songTitle = document.getElementById('information').value; // gets the information from the textbox
   document.getElementById('information').value = ""; // sets textbox to "" 
-
-  document.getElementById("songTitle").innerHTML = "Song Title: " + songTitle
   
-  const id = findInformationWithSong(songTitle)
+  if (findInformationWithSong(songTitle) != -1) {
+    const id = findInformationWithSong(songTitle)
+    draw(id, svg);
+    document.getElementById("songTitle").innerHTML = "Song Title: " + songTitle
+  } else {
+    alert("Song not found :(");
+  }
   
-  draw(id, svg);
   
 }
 
@@ -150,6 +153,7 @@ function findInformationWithSong(songTitle) {
       return realData.nodes[i]
     }
   }
+  return -1;
 }
 
 

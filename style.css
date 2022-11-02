@@ -3,7 +3,7 @@ body {
 }
 
 h1 {
-    text-align: center;
+  text-align: center;
 }
 
 .header {
@@ -14,11 +14,20 @@ h1 {
 .flex-container {
   display: flex;
   flex-direction: row;
-  
 }
 
 .column {
   display: flex;
   flex-direction: column;
+  
+}
 
+#column1 {
+  width: 50%;
+}
+
+
+#column2 {
+  width: 50%;
+  text-align: center
 }

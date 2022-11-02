@@ -134,6 +134,8 @@ function node_hover_out(event, d) {
 function submitClicked() {
   const songTitle = document.getElementById('information').value; // gets the information from the textbox
   document.getElementById('information').value = ""; // sets textbox to "" 
+
+  document.getElementById("songTitle").innerHTML = "Song Title: " + songTitle
   
   const id = findInformationWithSong(songTitle)
   

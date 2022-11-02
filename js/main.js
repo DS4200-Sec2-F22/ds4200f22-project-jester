@@ -8,10 +8,10 @@ import data from "/data/fakeData.json" assert { type: "json" };
 import realData from "/data/data.json" assert { type: "json" };
 
 const nodes = data.nodes; 
-const links = data.links; 
+const links = data.links;
 
-const FRAME_HEIGHT = 500;
-const FRAME_WIDTH = 500;
+const FRAME_HEIGHT = 700;
+const FRAME_WIDTH = 700;
 const MARGINS = { left: 50, right: 50, top: 50, bottom: 50 };
 const SCALE = 50;
 const PADDING = 20;
@@ -23,6 +23,10 @@ const VIS_WIDTH = FRAME_WIDTH - MARGINS.top - MARGINS.bottom;
 
 // -----------------PLOT 1-----------------
 
+let activeNodes = [];
+let neighborNodes = [];
+let activeLinks = []; //can we just reset activeLinks every time to be based on any existing links between nodes (are the only links in the dataset links in the top XX?)
+
 const FRAME1 = d3.select("#vis1")
 .append("svg")
 .attr("height", FRAME_HEIGHT)
@@ -31,14 +35,14 @@ const FRAME1 = d3.select("#vis1")
 
 
 const simulation = d3
-.forceSimulation(nodes)
+.forceSimulation(activeNodes)
 .force('charge', d3.forceManyBody().strength(-20))
 .force('center', d3.forceCenter(FRAME_HEIGHT / 2, FRAME_WIDTH / 2))
-.force("link", d3.forceLink(links).id(d => d.id))
+.force("link", d3.forceLink(activeLinks).id(d => d.id))
 .on('tick', ticked);
 
 simulation.force('link', d3.forceLink()
-.strength(link => link.strength));
+  .strength(link => link.strength));
 
 const linkElements = FRAME1
 .append('g')
@@ -46,7 +50,7 @@ const linkElements = FRAME1
 .attr("fill", "none")
 .attr('stroke-width', 2)
 .selectAll('line')
-.data(links)
+.data(activeLinks)
 .enter()
 .append('line')
 .attr('stroke', 'black');
@@ -54,19 +58,20 @@ const linkElements = FRAME1
 const nodeElements = FRAME1
 .append('g')
 .selectAll('circle')
-.data(nodes)
+.data(activeNodes)
 .enter()
 .append('circle')
 .attr('r', 10)
 .on("mouseenter", node_hover_over)
 .on("mousemove", node_move)
 .on("mouseleave", node_hover_out)
+.on("click", point_clicked)
 .attr('fill', 'red');
 
 const textElements = FRAME1
 .append("g")
 .selectAll("text")
-.data(nodes)
+.data(activeNodes)
 .enter()
 .append("text")
 .attr('pointer-events', 'none')
@@ -125,30 +130,94 @@ function node_hover_out(event, d) {
   // hides the tooltip
   tooltip.style("opacity", 0);
 }
-// -----------------PLOT 2----------------
 
-
-
-
-
-function submitClicked() {
+function buttonClicked() {
   const songTitle = document.getElementById('information').value; // gets the information from the textbox
   document.getElementById('information').value = ""; // sets textbox to "" 
   
   if (findInformationWithSong(songTitle) != -1) {
-    const id = findInformationWithSong(songTitle)
-    draw(id, svg);
-    document.getElementById("songTitle").innerHTML = "Song Title: " + songTitle
+    const node = findInformationWithSong(songTitle)
+    draw(node, svg); //this can be removed when we integrate linking
+    addNode(node);
+    document.getElementById("songTitle").innerHTML = "Song Added: " + songTitle
   } else {
     alert("Song not found :(");
   }
-  
-  
+
+  function addNode(node) {
+
+    if (! activeNodes.includes(node)) {
+  activeNodes.push(node); //adds node to graph
+}
+}
+
+function addNeighbor(node) {
+
+  neighborNodes.push(node);
+}
+
+function resetVis() {
+
+  FRAME1.selectAll('circle').remove();
+  FRAME1.selectAll('line').remove();
+
+  FRAME1
+  .selectAll('circle')
+  .data(activeNodes)
+  .enter()
+  .append('circle')
+  .attr('r', 10)
+  .on("mouseenter", node_hover_over)
+  .on("mousemove", node_move)
+  .on("mouseleave", node_hover_out)
+  .on("click", point_clicked)
+  .attr('fill', 'red');
+
+  d3
+  .forceSimulation(activeNodes)
+  .force('charge', d3.forceManyBody().strength(-20))
+  .force('center', d3.forceCenter(FRAME_HEIGHT / 2, FRAME_WIDTH / 2))
+  .force("link", d3.forceLink(activeLinks).id(d => d.id))
+  .on('tick', ticked);
+
+  simulation.force('link', d3.forceLink()
+    .strength(link => link.strength));
+
+  FRAME1
+  .attr("class", "links")
+  .attr("fill", "none")
+  .attr('stroke-width', 2)
+  .selectAll('line')
+  .data(activeLinks)
+  .enter()
+  .append('line')
+  .attr('stroke', 'black');
+
+  FRAME1
+  .selectAll('circle')
+  .data(activeNodes)
+  .enter()
+  .append('circle')
+  .attr('r', 10)
+  .on("mouseenter", node_hover_over)
+  .on("mousemove", node_move)
+  .on("mouseleave", node_hover_out)
+  .on("click", point_clicked)
+  .attr('fill', 'red');
+
+  FRAME1
+  .selectAll("text")
+  .data(activeNodes)
+  .enter()
+  .append("text")
+  .attr('pointer-events', 'none')
+  .text(d => d.id);
+}
 }
 
 function findInformationWithSong(songTitle) {
   for (let i = 0; i < realData.nodes.length; i++) {
-    // console.log(realData.nodes[i].title_track)
+    // console.log(nodes[i].title_track)
     if(realData.nodes[i].title_track == songTitle) {
       return realData.nodes[i]
     }
@@ -156,16 +225,30 @@ function findInformationWithSong(songTitle) {
   return -1;
 }
 
+function point_clicked(event, d) {
+      // css toggle; when point is clicked, 'yes_border' is activated
+      d3.select(this).classed("yes_border", d3.select(this).classed("yes_border") ? false : true);
+
+      const id = this.id;
+
+      let neighborNodes = [];
+      links.forEach(l => {if(l.source == id) {addNeighbor(nodes.find(n => n.id == l.target)); addNode(nodes.find(n => n.id == l.target));}});
+      //resetLinks(); //todo: write reset links function (resets activeLinks to reflect nodes in activeNodes)
+    }
+    
+    document.getElementById("button").addEventListener("click", buttonClicked);
+// -----------------PLOT 2----------------
 
 
-const svg = d3.select("#col1")
-  .append("svg")
-  .attr("width", 650)
-  .attr("height", 650);
+
+const svg = d3.select("#vis2")
+.append("svg")
+.attr("width", 650)
+.attr("height", 650);
 
 
 function draw(id) {
-  
+
   svg.selectAll("*").remove();
 
   const acoustincness = id.acousticness;
@@ -176,7 +259,7 @@ function draw(id) {
   const speechiness = id.speechiness;
   const valence = id.valence;
   
-  // removed tempo becasue it's not from 0 - 1 
+  // removed tempo because it's not from 0 - 1 
   
   let features = ["Acousticness", "Danceability", "Energy", "Instrumentalness", "Liveness", "Speechiness", "Valence"];
   let information = [acoustincness, danceability, energy, instrumentalness, liveness, speechiness, valence];
@@ -214,27 +297,27 @@ function draw(id) {
     .attr("stroke", "gray")
     .attr("r", radialScale(t))
     );
-    
-    ticks.forEach(t =>
-      svg.append("text")
-      .attr("x", 305)
-      .attr("y", 300 - radialScale(t))
-      .text((t / 10).toString())
-      );
-      
-      
-      function angleToCoordinate(angle, value) {
-        let x = Math.cos(angle) * radialScale(value);
-        let y = Math.sin(angle) * radialScale(value);
-        return { "x": 300 + x, "y": 300 - y };
-      }
-      
-      for (let i = 0; i < features.length; i++) {
-        let ft_name = features[i];
-        let angle = (Math.PI / 2) + (2 * Math.PI * i / features.length);
-        let line_coordinate = angleToCoordinate(angle, 10);
-        let label_coordinate = angleToCoordinate(angle, 10.5);
-        
+
+  ticks.forEach(t =>
+    svg.append("text")
+    .attr("x", 305)
+    .attr("y", 300 - radialScale(t))
+    .text((t / 10).toString())
+    );
+
+
+  function angleToCoordinate(angle, value) {
+    let x = Math.cos(angle) * radialScale(value);
+    let y = Math.sin(angle) * radialScale(value);
+    return { "x": 300 + x, "y": 300 - y };
+  }
+
+  for (let i = 0; i < features.length; i++) {
+    let ft_name = features[i];
+    let angle = (Math.PI / 2) + (2 * Math.PI * i / features.length);
+    let line_coordinate = angleToCoordinate(angle, 10);
+    let label_coordinate = angleToCoordinate(angle, 10.5);
+
         //draw axis line
         svg.append("line")
         .attr("x1", 300)
@@ -283,10 +366,6 @@ function draw(id) {
       }
       
     }
-
-    
-    
-    document.getElementById("button").addEventListener("click", submitClicked);
     
     
     

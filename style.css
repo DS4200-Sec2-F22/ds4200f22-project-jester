@@ -31,3 +31,10 @@ h1 {
   width: 50%;
   text-align: center
 }
+
+.yes_border {
+  fill: blueviolet;
+  stroke: black;
+  stroke-width: 5px;
+}
+

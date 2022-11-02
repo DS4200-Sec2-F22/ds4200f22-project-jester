@@ -1,15 +1,13 @@
+
+//Networks Graph Reference: https://observablehq.com/@d3/force-directed-graph
+//Spider Chart Reference: https://d3-graph-gallery.com/spider
+
+// ----------CONSTANTS FOR PAGE SETUP----------------
 import data from "/data/fakeData.json" assert { type: "json" };
 
 
 const nodes = data.nodes; 
 const links = data.links; 
-
-// const links = data.links.map(d => Object.create(d));
-// const nodes = data.nodes.map(d => Object.create(d));
-
-console.log(nodes);
-console.log(links);
-
 
 const FRAME_HEIGHT = 500;
 const FRAME_WIDTH = 500;
@@ -17,11 +15,12 @@ const MARGINS = { left: 50, right: 50, top: 50, bottom: 50 };
 const SCALE = 50;
 const PADDING = 20;
 
-// visualization size with margins in mind
-const VIS_HEIGHT = FRAME_HEIGHT - MARGINS.top - MARGINS.bottom;
-const VIS_WIDTH = FRAME_WIDTH - MARGINS.left - MARGINS.right;
+const VIS_HEIGHT = FRAME_HEIGHT - MARGINS.left - MARGINS.right;
+const VIS_WIDTH = FRAME_WIDTH - MARGINS.top - MARGINS.bottom; 
 
-  const FRAME1 = d3.select("#col1")
+// ----------SETTING THE FRAME FOR BOTH VISUALIZATIONS----------------
+
+const FRAME1 = d3.select("#col1")
     .append("svg")
     .attr("height", FRAME_HEIGHT)
     .attr("width", FRAME_WIDTH)
@@ -51,9 +50,15 @@ const VIS_WIDTH = FRAME_WIDTH - MARGINS.left - MARGINS.right;
       .append('line')
         .attr('stroke-width', 2)
         .attr('stroke', '#E5E5E5')
+        
+// ---------FUNCTION TO BUILD BOTH PLOTS-------------
+function build_plots() {
 
+  // reading in data 
+  d3.csv("_____").then((data) => {
 
-  simulation.nodes(nodes).on('tick', ticked);
+    // -----------------PLOT 1-----------------
+    simulation.nodes(nodes).on('tick', ticked);
 
   simulation.force('link').links(linkElements);
 
@@ -67,6 +72,14 @@ const VIS_WIDTH = FRAME_WIDTH - MARGINS.left - MARGINS.right;
       .attr('x2', link => link.Target.x)
       .attr('y2', link => link.Target.y)
   }
+    // -----------------PLOT 2----------------
+   
+    });
+};
+
+build_plots();
+
+
 
 
 

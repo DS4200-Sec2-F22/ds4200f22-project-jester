@@ -55,7 +55,11 @@ const nodeElements = FRAME1
 .data(nodes)
 .enter()
 .append('circle')
-.attr('r', 10);
+.attr('r', 10)
+.on("mouseenter", node_hover_over)
+.on("mousemove", node_move)
+.on("mouseleave", node_hover_out)
+.attr('fill', 'red');
 
 const textElements = FRAME1
 .append("g")
@@ -79,6 +83,46 @@ function ticked() {
       .attr("x", d => d.x - 5)
       .attr("y", d => d.y + 5);
   }
+
+  let tooltip = d3.select("#vis1")
+    .append("div")
+    .style("opacity", 0)
+    .attr("class", "tooltip")
+    .style("background-color", "lightgrey")
+    .style("border", "solid")
+    .style("border-width", "1px")
+    .style("border-radius", "5px")
+    .style("padding", "5px")
+    .style("width", "125px")
+    .style("height", "72px")
+    .style("text-align", "center")
+    .style("font-size", "12px");
+
+function node_hover_over(event, d) {
+      // add 'hover' functionality
+      // on mouseover, change to green  
+      d3.select(event.currentTarget)
+      .style("fill", "green");
+
+      tooltip.style("opacity", 1);
+    }
+
+    function node_move(event, d) {
+      // add 'hover' tooltop movement functionality and text to the tooltip
+      tooltip.html("Category: " + d.id + "<p>Value: " + d.genre_top + "</p><p>Listens: " + d.listens + "</p>");
+      
+      // moves the tooltip with the mouse
+      tooltip.style("transform", "translate(" + d3.pointer(event)[0] + "px," + (-620 + d3.pointer(event)[1]) + "px)");
+    }
+
+    function node_hover_out(event, d) {
+      // on mouseleave, change back to the original color 
+      d3.select(event.currentTarget)
+      .style("fill", "red");
+
+      // hides the tooltip
+      tooltip.style("opacity", 0);
+    }
 // -----------------PLOT 2----------------
 
 

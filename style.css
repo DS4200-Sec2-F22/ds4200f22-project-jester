@@ -10,19 +10,8 @@ h1 {
   text-align: center;
 }
 
-#column1 {
-  width: 33%;
-}
-
-#column2 {
-  width: 33%;
-}
-#column3 {
-  width: 33%;
-}
 
 .flex-container {
-  
   display: flex;
   flex-direction: row;
   

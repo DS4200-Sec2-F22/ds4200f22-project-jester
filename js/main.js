@@ -1,5 +1,5 @@
 
-//Networks Graph Reference: https://observablehq.com/@d3/force-directed-graph
+//Networks Graph Reference: https://observablehq.com/@d3/force-directed-graph & https://medium.com/ninjaconcept/interactive-dynamic-force-directed-graphs-with-d3-da720c6d7811
 //Spider Chart Reference: https://d3-graph-gallery.com/spider
 
 // ----------CONSTANTS FOR PAGE SETUP----------------
@@ -20,7 +20,7 @@ const VIS_WIDTH = FRAME_WIDTH - MARGINS.top - MARGINS.bottom;
 
 // ----------SETTING THE FRAME FOR BOTH VISUALIZATIONS----------------
 
-const FRAME1 = d3.select("#col1")
+const FRAME1 = d3.select("#vis1")
     .append("svg")
     .attr("height", FRAME_HEIGHT)
     .attr("width", FRAME_WIDTH)
@@ -50,12 +50,9 @@ const FRAME1 = d3.select("#col1")
       .append('line')
         .attr('stroke-width', 2)
         .attr('stroke', '#E5E5E5')
-        
+
 // ---------FUNCTION TO BUILD BOTH PLOTS-------------
 function build_plots() {
-
-  // reading in data 
-  d3.csv("_____").then((data) => {
 
     // -----------------PLOT 1-----------------
     simulation.nodes(nodes).on('tick', ticked);
@@ -74,7 +71,6 @@ function build_plots() {
   }
     // -----------------PLOT 2----------------
    
-    });
 };
 
 build_plots();

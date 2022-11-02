@@ -4,54 +4,68 @@
 <head>
     <meta charset=utf-8/>
     <link rel="stylesheet" type="text/css" href="style.css">
-     <script src='js/d3.v6.1.1/d3.min.js'></script>
-
+    <script src='js/d3.v6.1.1/d3.min.js'></script>
+    
     <title>Visualizing a Music Recommendation Algorithm</title>
 </head>
 
 
 <body>
-
+    
     <h1>Visualization of a Music Recommendation Algorithm Using a Network Graph</h1>
-
+    
     <div>
         <h2 class="header">Motivation</h2>
         TODO: Provide an introduction/motivation for your project. Include the domain area your project
-addresses, the domain problem it seeks to solve, why solving this problem is important, and
-an overview of the use case for your tool.
-
-Introduction: We are an entire team of music lovers. Beyond music though, we're particularly passionate about understanding and visualizing recommendation algorithms in order to understand how they work. Our motivation for this project brings these two passions together.
-
-Domain Area: Our domain area is that of individuals needing create entertaining song mashups that flow well.
-
-Domain Problem: In order to create a flow between songs, these individuals must be able to find similar songs as well as understand what makes the songs similar in order to make on the spot judgements to create a creative linking throughout the work.
-
-Use Cases: Our tool has two primary use cases for this domain area and problem: playlist development for hobbyists or producers and live DJing for hobbyist or professional DJs. Producers of playlists or albums need to create a track ordering that tells a story or creates a seamless flow. To do this, they need to understand the similarity between songs and what drives that similarity in order to create an effective ordering.
-
-Alternatively, the role of a DJ is to make these judgements on the fly. Without an AI tool or automation, the DJ needs to rely on his own awareness of song options and understanding of their dynamics from memory. With our visualization tool, a DJ would be able to link songs together over time, make snap judgement decisions on which song to choose next, and see what trajectory his performance has taken over time.
+        addresses, the domain problem it seeks to solve, why solving this problem is important, and
+        an overview of the use case for your tool.
+        
+        Introduction: We are an entire team of music lovers. Beyond music though, we're particularly passionate about understanding and visualizing recommendation algorithms in order to understand how they work. Our motivation for this project brings these two passions together.
+        
+        Domain Area: Our domain area is that of individuals needing create entertaining song mashups that flow well.
+        
+        Domain Problem: In order to create a flow between songs, these individuals must be able to find similar songs as well as understand what makes the songs similar in order to make on the spot judgements to create a creative linking throughout the work.
+        
+        Use Cases: Our tool has two primary use cases for this domain area and problem: playlist development for hobbyists or producers and live DJing for hobbyist or professional DJs. Producers of playlists or albums need to create a track ordering that tells a story or creates a seamless flow. To do this, they need to understand the similarity between songs and what drives that similarity in order to create an effective ordering.
+        
+        Alternatively, the role of a DJ is to make these judgements on the fly. Without an AI tool or automation, the DJ needs to rely on his own awareness of song options and understanding of their dynamics from memory. With our visualization tool, a DJ would be able to link songs together over time, make snap judgement decisions on which song to choose next, and see what trajectory his performance has taken over time.
     </div>
-
+    
     <div>
         <h2 class="header">Background</h2>
         TODO: Add link to report, demo video, link to data etc. here  
     </div>
-
+    
     <div>
         <h2 class="header">Visualization</h2>
         <div class="flex-container">
-        <div class = "column" id=column1>
-            <div id="vis1"></div>
+            <div class = "column" id=column1>
+                <div id="vis1"></div>
+            </div>
+            
+            <div class = "column" id="column2">
+                <h1 class="nav">Search Feature!</h1>
+                <h2>Enter Song Title!</h2>
+                
+                
+                <input id="information" label="id">
+                
+                <button id="button">
+                    Submit
+                </button>
+                
+                <h1 id="songTitle">Song Title: </h1>
+                
+                <div id="col1"></div>
+                
+            </div>      
         </div>
-        <div class = "column" id="column2">
-            <div id="vis2"></div>
-        </div>      
     </div>
-    </div>
-
+    
     <div>
         <h2 class="header">Acknowledgements</h2>
         TODO: Cite resources used here  
-
+        
         <div id="resources">
             <ul>
                 <li> <a href=" https://d3-graph-gallery.com/graph/scatter_basic.html"> https://d3-graph-gallery.com/graph/scatter_basic.html</a></li>
@@ -60,16 +74,16 @@ Alternatively, the role of a DJ is to make these judgements on the fly. Without 
                 <li> <a href="https://d3-graph-gallery.com/spider">https://d3-graph-gallery.com/spider</a></li>
                 <li> <a href="https://observablehq.com/@mbostock/d3-force-directed-graph">https://observablehq.com/@mbostock/d3-force-directed-graph</a></li>
                 <li> <a href="https://medium.com/ninjaconcept/interactive-dynamic-force-directed-graphs-with-d3-da720c6d7811">https://medium.com/ninjaconcept/interactive-dynamic-force-directed-graphs-with-d3-da720c6d7811</a></li>
-
+                
                 https://www.d3indepth.com/force-layout/
                 https://observablehq.com/@bumbeishvili/d3-v6-force-directed-graph-with-more-natural-drag-attractio
                 https://observablehq.com/@brunolaranjeira/d3-v6-force-directed-graph-with-directional-straight-arrow
-
+                
                 
             </ul>
         </div> 
     </div>
-
+    
     <script type="module" src="js/main.js"></script>
 </body>
 

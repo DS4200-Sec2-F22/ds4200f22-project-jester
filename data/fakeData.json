@@ -55,6 +55,34 @@
       "valence":0.485756185,
       "listens":9705.0,
       "genre_top":"Hip-Hop",
+      "track_listens":530.0},
+
+      {
+      "id":70717.0,
+      "acousticness":0.024435173,
+      "danceability":0.56715818,
+      "energy":0.398655044,
+      "instrumentalness":0.0000000107,
+      "liveness":0.147011069,
+      "speechiness":0.086146125,
+      "tempo":165.945,
+      "valence":0.485756185,
+      "listens":9705.0,
+      "genre_top":"Hip-Hop",
+      "track_listens":530.0},
+
+      {
+      "id":80244.0,
+      "acousticness":0.024435173,
+      "danceability":0.56715818,
+      "energy":0.398655044,
+      "instrumentalness":0.0000000107,
+      "liveness":0.147011069,
+      "speechiness":0.086146125,
+      "tempo":165.945,
+      "valence":0.485756185,
+      "listens":9705.0,
+      "genre_top":"Hip-Hop",
       "track_listens":530.0}
 
 
@@ -63,29 +91,29 @@
   
   "links": [
     {
-      "Source": 2.0,
-      "Target": 18222.0,
-      "Value": 0.400971861
+      "source": 2.0,
+      "target": 18222.0,
+      "value": 0.400971861
     },
     {
-      "Source": 2.0,
-      "Target": 26228.0,
-      "Value": 0.4637505546
+      "source": 2.0,
+      "target": 26228.0,
+      "value": 0.4637505546
     },
     {
-      "Source": 2.0,
-      "Target": 12369.0,
-      "Value": 0.4862967454
+      "source": 2.0,
+      "target": 12369.0,
+      "value": 0.4862967454
     },
     {
-      "Source": 2.0,
-      "Target": 70717.0,
-      "Value": 0.5668190375
+      "source": 2.0,
+      "target": 70717.0,
+      "value": 0.5668190375
     },
     {
-      "Source": 2.0,
-      "Target": 80244.0,
-      "Value": 0.5795446706
+      "source": 2.0,
+      "target": 80244.0,
+      "value": 0.5795446706
     }
   ]
 }

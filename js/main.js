@@ -5,7 +5,6 @@
 // ----------CONSTANTS FOR PAGE SETUP----------------
 import data from "/data/fakeData.json" assert { type: "json" };
 
-
 const nodes = data.nodes; 
 const links = data.links; 
 
@@ -20,60 +19,67 @@ const VIS_WIDTH = FRAME_WIDTH - MARGINS.top - MARGINS.bottom;
 
 // ----------SETTING THE FRAME FOR BOTH VISUALIZATIONS----------------
 
+// -----------------PLOT 1-----------------
+
 const FRAME1 = d3.select("#vis1")
-    .append("svg")
-    .attr("height", FRAME_HEIGHT)
-    .attr("width", FRAME_WIDTH)
-    .attr("class", "frame");
+.append("svg")
+.attr("height", FRAME_HEIGHT)
+.attr("width", FRAME_WIDTH)
+.attr("class", "frame");
 
 
-  const simulation = d3
-                      .forceSimulation()
-                        .force('charge', d3.forceManyBody().strength(-20))
-                        .force('center', d3.forceCenter(FRAME_HEIGHT / 2, FRAME_WIDTH / 2))
-                        .force('link', d3.forceLink()
-                        .id(link => link.id));
+const simulation = d3
+.forceSimulation(nodes)
+.force('charge', d3.forceManyBody().strength(-20))
+.force('center', d3.forceCenter(FRAME_HEIGHT / 2, FRAME_WIDTH / 2))
+.force("link", d3.forceLink(links).id(d => d.id))
+.on('tick', ticked);
 
-                      
-  const nodeElements = FRAME1.append('g')
-    .selectAll('circle')
-    .data(nodes)
-    .enter()
-    .append('circle')
-    .attr('r', 10);
+simulation.force('link', d3.forceLink()
+  .strength(link => link.strength));
 
-  const linkElements = FRAME1.append('g')
-      .selectAll('line')
-      .attr("class", "link")
-      .data(links)
-      .enter()
-      .append('line')
-        .attr('stroke-width', 2)
-        .attr('stroke', '#E5E5E5')
+const linkElements = FRAME1
+.append('g')
+.attr("class", "links")
+.attr("fill", "none")
+.attr('stroke-width', 2)
+.selectAll('line')
+.data(links)
+.enter()
+.append('line')
+.attr('stroke', 'black');
 
-// ---------FUNCTION TO BUILD BOTH PLOTS-------------
-function build_plots() {
+const nodeElements = FRAME1
+.append('g')
+.selectAll('circle')
+.data(nodes)
+.enter()
+.append('circle')
+.attr('r', 10);
 
-    // -----------------PLOT 1-----------------
-    simulation.nodes(nodes).on('tick', ticked);
+const textElements = FRAME1
+.append("g")
+.selectAll("text")
+.data(nodes)
+.enter()
+.append("text")
+.attr('pointer-events', 'none')
+.text(d => d.id);
 
-  simulation.force('link').links(linkElements);
-
-  function ticked() {
-    nodeElements
-      .attr('cx', node => node.x)
-      .attr('cy', node => node.y)
+function ticked() {
     linkElements
-      .attr('x1', link => link.Source.x)
-      .attr('y1', link => link.Source.y)
-      .attr('x2', link => link.Target.x)
-      .attr('y2', link => link.Target.y)
-  }
-    // -----------------PLOT 2----------------
-   
-};
+      .attr("x1", d => d.source.x)
+      .attr("y1", d => d.source.y)
+      .attr("x2", d => d.target.x)
+      .attr("y2", d => d.target.y);
 
-build_plots();
+    nodeElements.attr("cx", d => d.x).attr("cy", d => d.y);
+
+    textElements
+      .attr("x", d => d.x - 5)
+      .attr("y", d => d.y + 5);
+  }
+// -----------------PLOT 2----------------
 
 
 

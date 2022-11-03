@@ -3,8 +3,8 @@
 //Spider Chart Reference: https://d3-graph-gallery.com/spider
 
 // ----------CONSTANTS FOR PAGE SETUP----------------
-import realData from "/data/data.json" assert { type: "json" };
-import data from "/data/fakeData.json" assert { type: "json" };
+import realData from "../data/data.json" assert { type: "json" };
+import data from "../data/fakeData.json" assert { type: "json" };
 
 const nodes = data.nodes; 
 const links = data.links;

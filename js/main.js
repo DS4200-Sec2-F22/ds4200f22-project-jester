@@ -23,30 +23,29 @@ const VIS_WIDTH = FRAME_WIDTH - MARGINS.top - MARGINS.bottom;
 
 // -----------------PLOT 1-----------------
 
-let activeNodes = [];
+let activeNodes = nodes;
 let neighborNodes = [];
-let activeLinks = []; //can we just reset activeLinks every time to be based on any existing links between nodes (are the only links in the dataset links in the top XX?)
+let activeLinks = links; //can we just reset activeLinks every time to be based on any existing links between nodes (are the only links in the dataset links in the top XX?)
 
-const FRAME1 = d3.select("#vis1")
+let NETWORKFRAME = d3.select("#vis1")
 .append("svg")
 .attr("height", FRAME_HEIGHT)
 .attr("width", FRAME_WIDTH)
 .attr("class", "frame");
 
 
-const simulation = d3
+let simulation = d3
 .forceSimulation(activeNodes)
 .force('charge', d3.forceManyBody().strength(-20))
 .force('center', d3.forceCenter(FRAME_HEIGHT / 2, FRAME_WIDTH / 2))
-.force("link", d3.forceLink(activeLinks).id(d => d.id))
+.force('link', d3.forceLink(activeLinks).id(d => d.id))
 .on('tick', ticked);
 
 simulation.force('link', d3.forceLink()
   .strength(link => link.strength));
 
-const linkElements = FRAME1
+let linkElements = NETWORKFRAME
 .append('g')
-.attr("class", "links")
 .attr("fill", "none")
 .attr('stroke-width', 2)
 .selectAll('line')
@@ -55,7 +54,7 @@ const linkElements = FRAME1
 .append('line')
 .attr('stroke', 'black');
 
-const nodeElements = FRAME1
+let nodeElements = NETWORKFRAME
 .append('g')
 .selectAll('circle')
 .data(activeNodes)
@@ -68,7 +67,7 @@ const nodeElements = FRAME1
 .on("click", point_clicked)
 .attr('fill', 'red');
 
-const textElements = FRAME1
+let textElement = NETWORKFRAME
 .append("g")
 .selectAll("text")
 .data(activeNodes)
@@ -86,7 +85,7 @@ function ticked() {
   
   nodeElements.attr("cx", d => d.x).attr("cy", d => d.y);
   
-  textElements
+  textElement
   .attr("x", d => d.x - 5)
   .attr("y", d => d.y + 5);
 }
@@ -139,84 +138,92 @@ function buttonClicked() {
     const node = findInformationWithSong(songTitle)
     draw(node, svg); //this can be removed when we integrate linking
     addNode(node);
-    document.getElementById("songTitle").innerHTML = "Song Added: " + songTitle
   } else {
     alert("Song not found :(");
   }
-
-  function addNode(node) {
-
-    if (! activeNodes.includes(node)) {
-  activeNodes.push(node); //adds node to graph
-}
 }
 
-function addNeighbor(node) {
+function addNode(node) {
+  if (activeNodes.reduce((prev, curr) => (prev.id == node.id) || (curr.id == node.id),false)) {
+      activeNodes.push(node); //adds node to graph
+      document.getElementById("songTitle").innerHTML = "Song Added: " + songTitle;
+    }
 
-  neighborNodes.push(node);
-}
+    console.log(activeNodes);
+    console.log(nodeElements);
+    resetVis();
+    console.log(nodeElements);
+  }
 
-function resetVis() {
+  function addNeighbor(node) {
+    addNode(node);
+    neighborNodes.push(node);
+    resetVis();
+  }
 
-  FRAME1.selectAll('circle').remove();
-  FRAME1.selectAll('line').remove();
+  function resetVis() {
 
-  FRAME1
-  .selectAll('circle')
-  .data(activeNodes)
-  .enter()
-  .append('circle')
-  .attr('r', 10)
-  .on("mouseenter", node_hover_over)
-  .on("mousemove", node_move)
-  .on("mouseleave", node_hover_out)
-  .on("click", point_clicked)
-  .attr('fill', 'red');
+    NETWORKFRAME.selectAll('circle').remove();
+    NETWORKFRAME.selectAll('line').remove();
+    NETWORKFRAME.selectAll('text').remove();
 
-  d3
-  .forceSimulation(activeNodes)
-  .force('charge', d3.forceManyBody().strength(-20))
-  .force('center', d3.forceCenter(FRAME_HEIGHT / 2, FRAME_WIDTH / 2))
-  .force("link", d3.forceLink(activeLinks).id(d => d.id))
-  .on('tick', ticked);
+    console.log(simulation);
 
-  simulation.force('link', d3.forceLink()
-    .strength(link => link.strength));
+    /*
+    simulation.nodes(activeNodes);
+    simulation.force('link').links(activeLinks);
+    simulation.alpha(1).restart();
+    simulation.on('tick', ticked);
+    */
 
-  FRAME1
-  .attr("class", "links")
-  .attr("fill", "none")
-  .attr('stroke-width', 2)
-  .selectAll('line')
-  .data(activeLinks)
-  .enter()
-  .append('line')
-  .attr('stroke', 'black');
+    /*
+    simulation
+    .nodes(activeNodes);
+    .force('charge', d3.forceManyBody().strength(-20))
+    .force("link", d3.forceLink(activeLinks).id(d => d.id))
+    .force('center', d3.forceCenter(FRAME_HEIGHT / 2, FRAME_WIDTH / 2))
 
-  FRAME1
-  .selectAll('circle')
-  .data(activeNodes)
-  .enter()
-  .append('circle')
-  .attr('r', 10)
-  .on("mouseenter", node_hover_over)
-  .on("mousemove", node_move)
-  .on("mouseleave", node_hover_out)
-  .on("click", point_clicked)
-  .attr('fill', 'red');
+    simulation.force('link', d3.forceLink()
+      .strength(link => link.strength));
+      */
 
-  FRAME1
-  .selectAll("text")
-  .data(activeNodes)
-  .enter()
-  .append("text")
-  .attr('pointer-events', 'none')
-  .text(d => d.id);
-}
-}
+    
+    linkElements = NETWORKFRAME
+    .attr('stroke-width', 2)
+    .selectAll('line')
+    .data(activeLinks)
+    .enter()
+    .append('line')
+    .attr('stroke', 'black');
+
+    nodeElements = NETWORKFRAME
+    .selectAll('circle')
+    .data(activeNodes)
+    .enter()
+    .append('circle')
+    .attr('r', 10)
+    .on("mouseenter", node_hover_over)
+    .on("mousemove", node_move)
+    .on("mouseleave", node_hover_out)
+    .on("click", point_clicked)
+    .attr('fill', 'red');
+
+    textElement = NETWORKFRAME
+    .selectAll("text")
+    .data(activeNodes)
+    .enter()
+    .append("text")
+    .attr('pointer-events', 'none')
+    .text(d => d.id);
+
+    simulation.nodes(activeNodes)
+    .force("link", d3.forceLink(activeLinks).id(d => d.id))
+    .on('tick', ticked)
+    .restart();
+  }
 
 function findInformationWithSong(songTitle) {
-  for (let i = 0; i < realData.nodes.length; i++) {
+    for (let i = 0; i < realData.nodes.length; i++) {
     // console.log(nodes[i].title_track)
     if(realData.nodes[i].title_track == songTitle) {
       return realData.nodes[i]
@@ -232,7 +239,7 @@ function point_clicked(event, d) {
       const id = this.id;
 
       let neighborNodes = [];
-      links.forEach(l => {if(l.source == id) {addNeighbor(nodes.find(n => n.id == l.target)); addNode(nodes.find(n => n.id == l.target));}});
+      links.forEach(l => {if(l.source == id) {addNeighbor(nodes.find(n => n.id == l.target));}});
       //resetLinks(); //todo: write reset links function (resets activeLinks to reflect nodes in activeNodes)
     }
     

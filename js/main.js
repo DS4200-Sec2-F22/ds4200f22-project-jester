@@ -28,9 +28,9 @@ const VIS_WIDTH = FRAME_WIDTH - MARGINS.top - MARGINS.bottom;
 
 // -----------------PLOT 1-----------------
 
-let activeNodes = nodes;
+let activeNodes = nodes; //todo: set as empty
 let neighborNodes = [];
-let activeLinks = links; //can we just reset activeLinks every time to be based on any existing links between nodes (are the only links in the dataset links in the top XX?)
+let activeLinks = links;
 
 console.log(activeLinks);
 console.log(realData.links);
@@ -40,15 +40,6 @@ let NETWORKFRAME = d3.select("#vis1")
 .attr("height", FRAME_HEIGHT)
 .attr("width", FRAME_WIDTH)
 .attr("class", "frame");
-
-/*
-let simulation = d3
-.forceSimulation(nodes2)
-.force('charge', d3.forceManyBody().strength(-250))
-.force('centerX', d3.forceX(FRAME_WIDTH / 2))
-.force('centerY', d3.forceY(FRAME_HEIGHT / 2))
-.force('link', d3.forceLink(links2).id(d => d.id))
-*/
 
 let simulation = d3.forceSimulation(activeNodes)
 .nodes(activeNodes)
@@ -183,7 +174,7 @@ function addNode(node) {
 function addNeighbor(node) {
   addNode(node);
   neighborNodes.push(node);
-  //resetSpiderVis(); todo
+  //resetSpiderVis(); todo: create this function when we do linking
   }
 
   function resetVis() {
@@ -191,24 +182,6 @@ function addNeighbor(node) {
     NETWORKFRAME.selectAll('circle').remove();
     NETWORKFRAME.selectAll('line').remove();
     NETWORKFRAME.selectAll('text').remove();
-
-    /*
-    simulation.nodes(activeNodes);
-    simulation.force('link').links(activeLinks);
-    simulation.alpha(1).restart();
-    simulation.on('tick', ticked);
-    */
-
-    /*
-    simulation
-    .nodes(activeNodes);
-    .force('charge', d3.forceManyBody().strength(-20))
-    .force("link", d3.forceLink(activeLinks).id(d => d.id))
-    .force('center', d3.forceCenter(FRAME_HEIGHT / 2, FRAME_WIDTH / 2))
-
-    simulation.force('link', d3.forceLink()
-      .strength(link => link.strength));
-    */
 
       simulation = simulation.nodes(activeNodes)
       .force('charge', d3.forceManyBody().strength(-250))
@@ -277,7 +250,6 @@ function point_clicked(event, d) {
       neighborNodes = [];
       const tempNodes = realData.nodes;
       const tempLinks = realData.links;
-      //tempLinks.forEach(l => {if(l.source == id) {addNeighbor(tempNodes.at(tempNodes.indexOf(element => {element.id == l.target})));}}); //todo: delete realData
       
       for (let i = 0; i < tempLinks.length; i++) {
         if(tempLinks[i].source == id) {
@@ -294,19 +266,6 @@ function point_clicked(event, d) {
 
     function resetLinks(node) {
 
-      /*
-      for (let i = 0; i < activeNodes.length; i++) {
-        for (let j = 0; j < activeNodes.length; j++) {
-
-          for (let k = 0; k < realData.links.length; k++) {
-            if (realData.links[k].source == activeNodes[i].id && realData.links[k].target == activeNodes[j].id) {
-              activeLinks.push(realData.links[k]);
-            }
-          }
-        }
-      }
-      */
-
       for (let i = 0; i < activeNodes.length; i++) {
         for (let k = 0; k < realData.links.length; k++) {
             if (realData.links[k].source == activeNodes[i].id && realData.links[k].target == node.id) {
@@ -316,31 +275,22 @@ function point_clicked(event, d) {
             }
           }
       }
-
-      /*
-      for (let i = 0; i < activeLinks.length; i++) {
-        for (let j = 0; j < activeLinks.length; j++) {
-          if(activeLinks[i].source == activeLinks[j].target && activeLinks[i].target == activeLinks[j].source) {
-            activeLinks.splice(i, 1);
-          }
-        }
-      }
-      */
     }
 
+    // restarts visual when drag actions starts
     function dragstarted(event, d) {
-    if (!event.active) simulation.alphaTarget(0.3).restart(); //sets the current target alpha to the specified number in the range [0,1].
-    d.fy = d.y; //fx - the node’s fixed x-position. Original is null.
-    d.fx = d.x; //fy - the node’s fixed y-position. Original is null.
+    if (!event.active) simulation.alphaTarget(0.3).restart();
+    d.fy = d.y;
+    d.fx = d.x;
     }
 
-  //When the drag gesture starts, the targeted node is fixed to the pointer
+  //axes change as node gets dragged
   function dragged(event, d) {
     d.fx = event.x;
     d.fy = event.y;
   }
 
-  //the targeted node is released when the gesture ends
+  //the targeted node is released when the drag action ends
   function dragended(event, d) {
     if (!event.active) simulation.alphaTarget(0);
     d.fx = null;

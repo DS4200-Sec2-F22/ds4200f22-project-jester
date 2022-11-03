@@ -104,6 +104,8 @@ let tooltip = d3.select("#vis1")
 .style("text-align", "center")
 .style("font-size", "12px");
 
+document.getElementById("button").addEventListener("click", buttonClicked);
+
 function node_hover_over(event, d) {
   // add 'hover' functionality
   // on mouseover, change to green  
@@ -136,7 +138,7 @@ function buttonClicked() {
   
   if (findInformationWithSong(songTitle) != -1) {
     const node = findInformationWithSong(songTitle)
-    draw(node, svg); //this can be removed when we integrate linking
+    draw(node, svg); //todo: this can be removed when we integrate linking
     addNode(node);
   } else {
     alert("Song not found :(");
@@ -144,21 +146,19 @@ function buttonClicked() {
 }
 
 function addNode(node) {
-  if (activeNodes.reduce((prev, curr) => (prev.id == node.id) || (curr.id == node.id),false)) {
-      activeNodes.push(node); //adds node to graph
-      document.getElementById("songTitle").innerHTML = "Song Added: " + songTitle;
+  console.log(node);
+  if (!activeNodes.reduce((prev, curr) => (curr.id == node.id) || (prev), false)) {
+    console.log("made it");
+    activeNodes.push(node); //adds node to graph
+    document.getElementById("songTitle").innerHTML = "Song Added: " + node.title_track; //todo: move to addNode
     }
-
-    console.log(activeNodes);
-    console.log(nodeElements);
     resetVis();
-    console.log(nodeElements);
   }
 
   function addNeighbor(node) {
     addNode(node);
     neighborNodes.push(node);
-    resetVis();
+    //resetSpiderVis();
   }
 
   function resetVis() {
@@ -166,8 +166,6 @@ function addNode(node) {
     NETWORKFRAME.selectAll('circle').remove();
     NETWORKFRAME.selectAll('line').remove();
     NETWORKFRAME.selectAll('text').remove();
-
-    console.log(simulation);
 
     /*
     simulation.nodes(activeNodes);
@@ -234,16 +232,29 @@ function findInformationWithSong(songTitle) {
 
 function point_clicked(event, d) {
       // css toggle; when point is clicked, 'yes_border' is activated
-      d3.select(this).classed("yes_border", d3.select(this).classed("yes_border") ? false : true);
+      d3.select(this).classed("yes_border", d3.select(this).classed("yes_border") ? false : true); //todo: should class everything in neighborNodes after resetVis
 
-      const id = this.id;
+      const id = d.id;
 
-      let neighborNodes = [];
-      links.forEach(l => {if(l.source == id) {addNeighbor(nodes.find(n => n.id == l.target));}});
+      neighborNodes = [];
+      const tempNodes = realData.nodes;
+      const tempLinks = realData.links;
+      //tempLinks.forEach(l => {if(l.Source == id) {addNeighbor(tempNodes.at(tempNodes.indexOf(element => {element.id == l.Target})));}}); //todo: delete realData
+      
+      for (let i = 0; i < tempLinks.length; i++) {
+        if(tempLinks[i].Source == id) {
+          console.log("matched source");
+
+        for (let j = 0; j < tempNodes.length; j++) {
+          if (tempLinks[i].Target == tempNodes[j].id) {
+            addNeighbor(tempNodes[j]);
+          }
+        }
+    }
+  }
       //resetLinks(); //todo: write reset links function (resets activeLinks to reflect nodes in activeNodes)
     }
-    
-    document.getElementById("button").addEventListener("click", buttonClicked);
+
 // -----------------PLOT 2----------------
 
 

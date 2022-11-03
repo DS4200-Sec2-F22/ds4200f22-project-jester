@@ -3,12 +3,17 @@
 //Spider Chart Reference: https://d3-graph-gallery.com/spider
 
 // ----------CONSTANTS FOR PAGE SETUP----------------
-import data from "/data/fakeData.json" assert { type: "json" };
-
 import realData from "/data/data.json" assert { type: "json" };
+import data from "/data/fakeData.json" assert { type: "json" };
 
 const nodes = data.nodes; 
 const links = data.links;
+
+const nodes2 = realData.nodes;
+const links2 = realData.links;
+
+console.log(links);
+console.log(links2);
 
 const FRAME_HEIGHT = 700;
 const FRAME_WIDTH = 700;
@@ -27,15 +32,26 @@ let activeNodes = nodes;
 let neighborNodes = [];
 let activeLinks = links; //can we just reset activeLinks every time to be based on any existing links between nodes (are the only links in the dataset links in the top XX?)
 
+console.log(activeLinks);
+console.log(realData.links);
+
 let NETWORKFRAME = d3.select("#vis1")
 .append("svg")
 .attr("height", FRAME_HEIGHT)
 .attr("width", FRAME_WIDTH)
 .attr("class", "frame");
 
-
+/*
 let simulation = d3
-.forceSimulation(activeNodes)
+.forceSimulation(nodes2)
+.force('charge', d3.forceManyBody().strength(-250))
+.force('centerX', d3.forceX(FRAME_WIDTH / 2))
+.force('centerY', d3.forceY(FRAME_HEIGHT / 2))
+.force('link', d3.forceLink(links2).id(d => d.id))
+*/
+
+let simulation = d3.forceSimulation(activeNodes)
+.nodes(activeNodes)
 .force('charge', d3.forceManyBody().strength(-250))
 .force('centerX', d3.forceX(FRAME_WIDTH / 2))
 .force('centerY', d3.forceY(FRAME_HEIGHT / 2))
@@ -159,7 +175,7 @@ function addNode(node) {
     document.getElementById("songTitle").innerHTML = "Song Added: " + node.title_track;
   }
   console.log(activeLinks);
-  //resetLinks();
+  resetLinks(node);
   console.log(activeLinks);
   resetVis();
 }
@@ -192,8 +208,19 @@ function addNeighbor(node) {
 
     simulation.force('link', d3.forceLink()
       .strength(link => link.strength));
-      */
+    */
 
+      simulation = simulation.nodes(activeNodes)
+      .force('charge', d3.forceManyBody().strength(-250))
+      .force('centerX', d3.forceX(FRAME_WIDTH / 2))
+      .force('centerY', d3.forceY(FRAME_HEIGHT / 2))
+      .on('tick', ticked)
+      .restart();
+
+      simulation.force("link", d3.forceLink(activeLinks).id(d => d.id));
+
+      simulation.force('link', d3.forceLink()
+      .strength(link => link.strength));
 
       linkElements = NETWORKFRAME
       .attr('stroke-width', 2)
@@ -229,18 +256,6 @@ function addNeighbor(node) {
       .text(d => d.id);
 
       console.log(activeLinks);
-
-      simulation = simulation.nodes(activeNodes)
-      .force('charge', d3.forceManyBody().strength(-250))
-      .force('centerX', d3.forceX(FRAME_WIDTH / 2))
-      .force('centerY', d3.forceY(FRAME_HEIGHT / 2))
-      .on('tick', ticked)
-      .restart();
-
-      simulation.force("link", d3.forceLink(activeLinks).id(d => d.id));
-
-      simulation.force('link', d3.forceLink()
-      .strength(link => link.strength));
     }
 
     function findInformationWithSong(songTitle) {
@@ -262,44 +277,55 @@ function point_clicked(event, d) {
       neighborNodes = [];
       const tempNodes = realData.nodes;
       const tempLinks = realData.links;
-      //tempLinks.forEach(l => {if(l.Source == id) {addNeighbor(tempNodes.at(tempNodes.indexOf(element => {element.id == l.Target})));}}); //todo: delete realData
+      //tempLinks.forEach(l => {if(l.source == id) {addNeighbor(tempNodes.at(tempNodes.indexOf(element => {element.id == l.target})));}}); //todo: delete realData
       
       for (let i = 0; i < tempLinks.length; i++) {
-        if(tempLinks[i].Source == id) {
+        if(tempLinks[i].source == id) {
           console.log("matched source");
 
           for (let j = 0; j < tempNodes.length; j++) {
-            if (tempLinks[i].Target == tempNodes[j].id) {
+            if (tempLinks[i].target == tempNodes[j].id) {
               addNeighbor(tempNodes[j]);
             }
           }
         }
       }
-      //resetLinks(); //todo: write reset links function (resets activeLinks to reflect nodes in activeNodes)
     }
 
-    function resetLinks() {
+    function resetLinks(node) {
 
-      activeLinks = [];
-
+      /*
       for (let i = 0; i < activeNodes.length; i++) {
         for (let j = 0; j < activeNodes.length; j++) {
 
           for (let k = 0; k < realData.links.length; k++) {
-            if (realData.links[k].Source == activeNodes[i].id && realData.links[k].Target == activeNodes[j].id) {
+            if (realData.links[k].source == activeNodes[i].id && realData.links[k].target == activeNodes[j].id) {
               activeLinks.push(realData.links[k]);
             }
           }
         }
       }
+      */
 
+      for (let i = 0; i < activeNodes.length; i++) {
+        for (let k = 0; k < realData.links.length; k++) {
+            if (realData.links[k].source == activeNodes[i].id && realData.links[k].target == node.id) {
+              activeLinks.push(realData.links[k]);
+            } else if (realData.links[k].target == activeNodes[i].id && realData.links[k].source == node.id) {
+              activeLinks.push(realData.links[k]);
+            }
+          }
+      }
+
+      /*
       for (let i = 0; i < activeLinks.length; i++) {
         for (let j = 0; j < activeLinks.length; j++) {
-          if(activeLinks[i].Source == activeLinks[j].Target && activeLinks[i].Target == activeLinks[j].Source) {
+          if(activeLinks[i].source == activeLinks[j].target && activeLinks[i].target == activeLinks[j].source) {
             activeLinks.splice(i, 1);
           }
         }
       }
+      */
     }
 
     function dragstarted(event, d) {

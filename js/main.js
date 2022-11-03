@@ -36,8 +36,9 @@ let NETWORKFRAME = d3.select("#vis1")
 
 let simulation = d3
 .forceSimulation(activeNodes)
-.force('charge', d3.forceManyBody().strength(-20))
-.force('center', d3.forceCenter(FRAME_HEIGHT / 2, FRAME_WIDTH / 2))
+.force('charge', d3.forceManyBody().strength(-250))
+.force('centerX', d3.forceX(FRAME_WIDTH / 2))
+.force('centerY', d3.forceY(FRAME_HEIGHT / 2))
 .force('link', d3.forceLink(activeLinks).id(d => d.id))
 .on('tick', ticked);
 
@@ -65,7 +66,12 @@ let nodeElements = NETWORKFRAME
 .on("mousemove", node_move)
 .on("mouseleave", node_hover_out)
 .on("click", point_clicked)
-.attr('fill', 'red');
+.attr('fill', 'red')
+.call(d3
+        .drag()
+        .on("start", dragstarted)
+        .on("drag", dragged)
+        .on("end", dragended));
 
 let textElement = NETWORKFRAME
 .append("g")
@@ -150,15 +156,18 @@ function addNode(node) {
   if (!activeNodes.reduce((prev, curr) => (curr.id == node.id) || (prev), false)) {
     console.log("made it");
     activeNodes.push(node); //adds node to graph
-    document.getElementById("songTitle").innerHTML = "Song Added: " + node.title_track; //todo: move to addNode
-    }
-    resetVis();
+    document.getElementById("songTitle").innerHTML = "Song Added: " + node.title_track;
   }
+  console.log(activeLinks);
+  //resetLinks();
+  console.log(activeLinks);
+  resetVis();
+}
 
-  function addNeighbor(node) {
-    addNode(node);
-    neighborNodes.push(node);
-    //resetSpiderVis();
+function addNeighbor(node) {
+  addNode(node);
+  neighborNodes.push(node);
+  //resetSpiderVis(); todo
   }
 
   function resetVis() {
@@ -185,43 +194,57 @@ function addNode(node) {
       .strength(link => link.strength));
       */
 
-    
-    linkElements = NETWORKFRAME
-    .attr('stroke-width', 2)
-    .selectAll('line')
-    .data(activeLinks)
-    .enter()
-    .append('line')
-    .attr('stroke', 'black');
 
-    nodeElements = NETWORKFRAME
-    .selectAll('circle')
-    .data(activeNodes)
-    .enter()
-    .append('circle')
-    .attr('r', 10)
-    .on("mouseenter", node_hover_over)
-    .on("mousemove", node_move)
-    .on("mouseleave", node_hover_out)
-    .on("click", point_clicked)
-    .attr('fill', 'red');
+      linkElements = NETWORKFRAME
+      .attr('stroke-width', 2)
+      .selectAll('line')
+      .data(activeLinks)
+      .enter()
+      .append('line')
+      .attr('stroke', 'black');
 
-    textElement = NETWORKFRAME
-    .selectAll("text")
-    .data(activeNodes)
-    .enter()
-    .append("text")
-    .attr('pointer-events', 'none')
-    .text(d => d.id);
+      nodeElements = NETWORKFRAME
+      .selectAll('circle')
+      .data(activeNodes)
+      .enter()
+      .append('circle')
+      .attr('r', 10)
+      .on("mouseenter", node_hover_over)
+      .on("mousemove", node_move)
+      .on("mouseleave", node_hover_out)
+      .on("click", point_clicked)
+      .attr('fill', 'red')
+      .call(d3
+        .drag()
+        .on("start", dragstarted)
+        .on("drag", dragged)
+        .on("end", dragended));
 
-    simulation.nodes(activeNodes)
-    .force("link", d3.forceLink(activeLinks).id(d => d.id))
-    .on('tick', ticked)
-    .restart();
-  }
+      textElement = NETWORKFRAME
+      .selectAll("text")
+      .data(activeNodes)
+      .enter()
+      .append("text")
+      .attr('pointer-events', 'none')
+      .text(d => d.id);
 
-function findInformationWithSong(songTitle) {
-    for (let i = 0; i < realData.nodes.length; i++) {
+      console.log(activeLinks);
+
+      simulation = simulation.nodes(activeNodes)
+      .force('charge', d3.forceManyBody().strength(-250))
+      .force('centerX', d3.forceX(FRAME_WIDTH / 2))
+      .force('centerY', d3.forceY(FRAME_HEIGHT / 2))
+      .on('tick', ticked)
+      .restart();
+
+      simulation.force("link", d3.forceLink(activeLinks).id(d => d.id));
+
+      simulation.force('link', d3.forceLink()
+      .strength(link => link.strength));
+    }
+
+    function findInformationWithSong(songTitle) {
+      for (let i = 0; i < realData.nodes.length; i++) {
     // console.log(nodes[i].title_track)
     if(realData.nodes[i].title_track == songTitle) {
       return realData.nodes[i]
@@ -245,15 +268,58 @@ function point_clicked(event, d) {
         if(tempLinks[i].Source == id) {
           console.log("matched source");
 
-        for (let j = 0; j < tempNodes.length; j++) {
-          if (tempLinks[i].Target == tempNodes[j].id) {
-            addNeighbor(tempNodes[j]);
+          for (let j = 0; j < tempNodes.length; j++) {
+            if (tempLinks[i].Target == tempNodes[j].id) {
+              addNeighbor(tempNodes[j]);
+            }
           }
         }
-    }
-  }
+      }
       //resetLinks(); //todo: write reset links function (resets activeLinks to reflect nodes in activeNodes)
     }
+
+    function resetLinks() {
+
+      activeLinks = [];
+
+      for (let i = 0; i < activeNodes.length; i++) {
+        for (let j = 0; j < activeNodes.length; j++) {
+
+          for (let k = 0; k < realData.links.length; k++) {
+            if (realData.links[k].Source == activeNodes[i].id && realData.links[k].Target == activeNodes[j].id) {
+              activeLinks.push(realData.links[k]);
+            }
+          }
+        }
+      }
+
+      for (let i = 0; i < activeLinks.length; i++) {
+        for (let j = 0; j < activeLinks.length; j++) {
+          if(activeLinks[i].Source == activeLinks[j].Target && activeLinks[i].Target == activeLinks[j].Source) {
+            activeLinks.splice(i, 1);
+          }
+        }
+      }
+    }
+
+    function dragstarted(event, d) {
+    if (!event.active) simulation.alphaTarget(0.3).restart(); //sets the current target alpha to the specified number in the range [0,1].
+    d.fy = d.y; //fx - the node’s fixed x-position. Original is null.
+    d.fx = d.x; //fy - the node’s fixed y-position. Original is null.
+    }
+
+  //When the drag gesture starts, the targeted node is fixed to the pointer
+  function dragged(event, d) {
+    d.fx = event.x;
+    d.fy = event.y;
+  }
+
+  //the targeted node is released when the gesture ends
+  function dragended(event, d) {
+    if (!event.active) simulation.alphaTarget(0);
+    d.fx = null;
+    d.fy = null;
+  }
 
 // -----------------PLOT 2----------------
 

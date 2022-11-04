@@ -174,7 +174,7 @@ function addNode(node) {
 function addNeighbor(node) {
   addNode(node);
   neighborNodes.push(node);
-  //resetSpiderVis(); todo: create this function when we do linking
+  //resetSpiderVis(); todo: create this function when we do linking -> you may actually just be able to call draw()
   }
 
   function resetVis() {
@@ -307,7 +307,7 @@ const svg = d3.select("#vis2")
 .attr("height", 650);
 
 
-function draw(id) {
+function draw(id) {//todo: draw should be modified to not take in an id and just draw all nodes in neighborNodes[]
 
   svg.selectAll("*").remove();
 

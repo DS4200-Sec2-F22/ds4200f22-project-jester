@@ -339,8 +339,7 @@ function draw(id) {//todo: draw should be modified to not take in an id and just
   
   data.push(point);
   
-  
-  
+
   
   let radialScale = d3.scaleLinear()
   .domain([0, 10])

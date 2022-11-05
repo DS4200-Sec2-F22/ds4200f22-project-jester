@@ -12,38 +12,58 @@
 
 <body>
     
-    <h1>Visualization of a Music Recommendation Algorithm Using a Network Graph</h1>
+    <div class="intro">
+        <h1>Visualization of a Music Recommendation Algorithm Using a Network Graph</h1>
+    </div>
     
-   <div>
-        <h2 class="header">Motivation</h2>
-        <div>
-        We are an entire team of music lovers. Beyond music though, we're particularly passionate about understanding and visualizing recommendation algorithms in order to understand how they work. Our motivation for this project brings these two passions together. Our project is involved in the area of recommendation systems and algorithms. We want to allow our users to be able to find song recommendations, as well as understand what makes the songs similar in order to make on the spot judgements to create a creative linking throughout the work. 
-        </div>
-        <br>
-        <div>
-        Our tool has two primary use cases for this domain area and problem: playlist development for hobbyists or producers and live DJing for hobbyist or professional DJs. Producers of playlists or albums need to create a track ordering that tells a story or creates a seamless flow. To do this, they need to understand the similarity between songs and what drives that similarity in order to create an effective ordering. Alternatively, the role of a DJ is to make these judgements on the fly. Without an AI tool or automation, the DJ needs to rely on his own awareness of song options and understanding of their dynamics from memory. With our visualization tool, a DJ would be able to link songs together over time, make snap judgement decisions on which song to choose next, and see what trajectory his performance has taken over time.
+    <div>
+        
+    </div class="motivation">
+    <h4 class="animate-charcter-2"> Motivation</h4>
+    
+    <h1 class="motivation">
+        
+        We are an entire team of music lovers. Beyond music though, we're particularly passionate about understanding and
+        visualizing recommendation algorithms in order to understand how they work. Our motivation for this project brings these
+        two passions together. Our project is involved in the area of recommendation systems and algorithms. We want to allow
+        our users to be able to find song recommendations, as well as understand what makes the songs similar in order to make
+        on the spot judgements to create a creative linking throughout the work.
+        Our
+    </h1>
+</div>
+
+<!--     
+    
+    <div class="header">
+        <h2>Motivation</h2>
+        
+        <div class="headerInformation">
+            We are an entire team of music lovers. Beyond music though, we're particularly passionate about understanding and visualizing recommendation algorithms in order to understand how they work. Our motivation for this project brings these two passions together. Our project is involved in the area of recommendation systems and algorithms. We want to allow our users to be able to find song recommendations, as well as understand what makes the songs similar in order to make on the spot judgements to create a creative linking throughout the work. 
+            <br>
+            <br>
+            Our tool has two primary use cases for this domain area and problem: playlist development for hobbyists or producers and live DJing for hobbyist or professional DJs. Producers of playlists or albums need to create a track ordering that tells a story or creates a seamless flow. To do this, they need to understand the similarity between songs and what drives that similarity in order to create an effective ordering. Alternatively, the role of a DJ is to make these judgements on the fly. Without an AI tool or automation, the DJ needs to rely on his own awareness of song options and understanding of their dynamics from memory. With our visualization tool, a DJ would be able to link songs together over time, make snap judgement decisions on which song to choose next, and see what trajectory his performance has taken over time.
         </div>
     </div>
     
     <div>
         <h2 class="header">Background</h2>
         <h3 class="subheader">Data</h3>
-
+        
         <div>
-        The original dataset was collected from the Free Musical Archive ("FMA"). FMA offers free access to open licensed, original music by independent artists around the world. Our tool visualizes different song tracks and recommended songs based on similarity of different attributes like valence, tempo and danceability. We used Python to clean and prepare our data. In order to find the similarity between songs, we decided to use the Euclidean distance method via Scikit-Learn to obtain an adjacency matrix for all nodes/songs. We then found top 6 matches and converted the data to a json file. 
+            The original dataset was collected from the Free Musical Archive ("FMA"). FMA offers free access to open licensed, original music by independent artists around the world. Our tool visualizes different song tracks and recommended songs based on similarity of different attributes like valence, tempo and danceability. We used Python to clean and prepare our data. In order to find the similarity between songs, we decided to use the Euclidean distance method via Scikit-Learn to obtain an adjacency matrix for all nodes/songs. We then found top 6 matches and converted the data to a json file. 
         </div>
         <br>
         <div>
-        The following are potential issues with our dataset. Data sampling might not be accurate for our population, presenting biases as only independent artists who are willing to upload their music for free. As a result, the bias is that any music that is privatized will not be present. Some data quality issues are that some tracks do not have genres associated with them and there are multiple tracks with the same names. There are also some erroneous lines in the csv file that had to be removed. To correct this, we had to manually delete such rows from the csv files. Moreover, outliers in the data consist of six songs that are shorter than two seconds. 
+            The following are potential issues with our dataset. Data sampling might not be accurate for our population, presenting biases as only independent artists who are willing to upload their music for free. As a result, the bias is that any music that is privatized will not be present. Some data quality issues are that some tracks do not have genres associated with them and there are multiple tracks with the same names. There are also some erroneous lines in the csv file that had to be removed. To correct this, we had to manually delete such rows from the csv files. Moreover, outliers in the data consist of six songs that are shorter than two seconds. 
         </div>
         <br>
         <div>
-        Original Data link: 
-        <a href="https://github.com/mdeff/fma"> https://github.com/mdeff/fma</a>
+            Original Data link: 
+            <a href="https://github.com/mdeff/fma"> https://github.com/mdeff/fma</a>
         </div>
-    </div>
+    </div> -->
     
-    <div>
+    <!-- <div>
         <h2 class="header">Visualization</h2>
         <div> <strong>NOTE:</strong>The network graph is <em>not</em> our final visualization for pm-03. To see our final visualization (spider chart) that has static and interactive details implemented please enter a song and click submit. Sample song titles are as follows: </div>
         <ul>
@@ -63,7 +83,7 @@
                     
                     <h1 id="songTitle">Song Title: </h1>
                 </div>
-
+                
                 <div id="vis1"></div>
             </div>
             
@@ -75,7 +95,7 @@
     
     <div>
         <h2 class="header">Acknowledgements</h2>
-
+        
         <div id="resources">
             <ul>
                 <li> <a href=" https://d3-graph-gallery.com/graph/scatter_basic.html"> https://d3-graph-gallery.com/graph/scatter_basic.html</a></li>
@@ -89,7 +109,7 @@
                 
             </ul>
         </div> 
-    </div>
+    </div> -->
     
     <script type="module" src="js/main.js"></script>
 </body>

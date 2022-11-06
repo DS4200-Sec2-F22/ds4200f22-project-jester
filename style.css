@@ -94,17 +94,21 @@ a{
 
 }
 
-.flex-container {
-  display: flex;
-  flex-direction: row;
+
+.yes_border {
+  fill: blueviolet;
+  stroke: black;
+  stroke-width: 5px;
 }
+
 
 .column {
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
   
 }
 
+/* First Visualization */
 #column1 {
   width: 50%;
 }
@@ -115,10 +119,21 @@ a{
   text-align: center
 }
 
-.yes_border {
-  fill: blueviolet;
-  stroke: black;
-  stroke-width: 5px;
+
+.vis {
+  color: white; 
 }
+
+.navbar { 
+  display: block; 
+  text-align: center;
+  padding-bottom: 100px;
+}
+
+.enterSong {
+  justify-content: center;
+  display: flex;
+}
+
 
 

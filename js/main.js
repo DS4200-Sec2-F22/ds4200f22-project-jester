@@ -2,6 +2,17 @@
 //Networks Graph Reference: https://observablehq.com/@d3/force-directed-graph & https://medium.com/ninjaconcept/interactive-dynamic-force-directed-graphs-with-d3-da720c6d7811
 //Spider Chart Reference: https://d3-graph-gallery.com/spider
 
+
+/*
+- NeighorNodes needs to be all connections to the node and the node itself, not just the new connections
+- linked hover state for spider chart to node
+- make active nodes empty
+- hover over to display only connections to selected node (https://bl.ocks.org/martinjc/7aa53c7bf3e411238ac8aef280bd6581) or (https://observablehq.com/@john-guerra/force-directed-graph-with-link-highlighting)
+- get rid Song Added:
+
+*/
+
+
 // ----------CONSTANTS FOR PAGE SETUP----------------
 import realData from "../data/data.json" assert { type: "json" };
 import data from "../data/fakeData.json" assert { type: "json" };
@@ -28,9 +39,9 @@ const VIS_WIDTH = FRAME_WIDTH - MARGINS.top - MARGINS.bottom;
 
 // -----------------PLOT 1-----------------
 
-let activeNodes = nodes; //todo: set as empty
+let activeNodes = []; 
 let neighborNodes = [];
-let activeLinks = links;
+let activeLinks = [];
 
 console.log(activeLinks);
 console.log(realData.links);
@@ -43,10 +54,10 @@ let NETWORKFRAME = d3.select("#vis1")
 
 let simulation = d3.forceSimulation(activeNodes)
 .nodes(activeNodes)
-.force('charge', d3.forceManyBody().strength(-250))
-.force('centerX', d3.forceX(FRAME_WIDTH / 2))
-.force('centerY', d3.forceY(FRAME_HEIGHT / 2))
-.force('link', d3.forceLink(activeLinks).id(d => d.id))
+//.force('radial', d3.forceRadial(200, FRAME_WIDTH, FRAME_HEIGHT))
+.force('charge', d3.forceManyBody().strength(-200))
+.force('center', d3.forceCenter(FRAME_WIDTH/3, FRAME_HEIGHT/3))
+//.force('link', d3.forceLink(activeLinks).id(d => d.id).distance(5))
 .on('tick', ticked);
 
 simulation.force('link', d3.forceLink()
@@ -79,6 +90,16 @@ let nodeElements = NETWORKFRAME
         .on("start", dragstarted)
         .on("drag", dragged)
         .on("end", dragended));
+        // TESTING FOR DISPLAYING NEAREST NODE CONNECTIONS
+        // .on("mouseenter", (evt, d) => {
+        //   linkElements
+        //     .attr("display", "none")
+        //     .filter(l => l.source.id === d.id || l.target.id === d.id)
+        //     .attr("display", "block");
+        // })
+        // .on("mouseleave", evt => {
+        //   linkElements.attr("display", "block");
+        // });
 
 let textElement = NETWORKFRAME
 .append("g")
@@ -122,10 +143,12 @@ document.getElementById("button").addEventListener("click", buttonClicked);
 function node_hover_over(event, d) {
   // add 'hover' functionality
   // on mouseover, change to green  
+
   d3.select(event.currentTarget)
   .style("fill", "green");
   
   tooltip.style("opacity", 1);
+
 }
 
 function node_move(event, d) {
@@ -143,6 +166,7 @@ function node_hover_out(event, d) {
   
   // hides the tooltip
   tooltip.style("opacity", 0);
+
 }
 
 function buttonClicked() {
@@ -151,7 +175,7 @@ function buttonClicked() {
   
   if (findInformationWithSong(songTitle) != -1) {
     const node = findInformationWithSong(songTitle)
-    draw(node, svg); //todo: this can be removed when we integrate linking
+    // draw(node, svg); //todo: this can be removed when we integrate linking
     addNode(node);
   } else {
     alert("Song not found :(");
@@ -161,20 +185,21 @@ function buttonClicked() {
 function addNode(node) {
   console.log(node);
   if (!activeNodes.reduce((prev, curr) => (curr.id == node.id) || (prev), false)) {
-    console.log("made it");
+    //console.log("made it");
     activeNodes.push(node); //adds node to graph
     document.getElementById("songTitle").innerHTML = "Song Added: " + node.title_track;
   }
-  console.log(activeLinks);
+  //console.log(activeLinks);
   resetLinks(node);
-  console.log(activeLinks);
+  //(activeLinks);
   resetVis();
 }
 
 function addNeighbor(node) {
   addNode(node);
   neighborNodes.push(node);
-  //resetSpiderVis(); todo: create this function when we do linking -> you may actually just be able to call draw()
+  console.log("NN"+neighborNodes)
+
   }
 
   function resetVis() {
@@ -243,7 +268,7 @@ function addNeighbor(node) {
 
 function point_clicked(event, d) {
       // css toggle; when point is clicked, 'yes_border' is activated
-      d3.select(this).classed("yes_border", d3.select(this).classed("yes_border") ? false : true); //todo: should class everything in neighborNodes after resetVis
+      //d3.select("circle").classed("yes_border", d3.select(this).classed("yes_border") ? false : true); //todo: should class everything in neighborNodes after resetVis
 
       const id = d.id;
 
@@ -258,10 +283,12 @@ function point_clicked(event, d) {
           for (let j = 0; j < tempNodes.length; j++) {
             if (tempLinks[i].target == tempNodes[j].id) {
               addNeighbor(tempNodes[j]);
+              console.log("neighbor added");
             }
           }
         }
       }
+      draw(neighborNodes);
     }
 
     function resetLinks(node) {
@@ -306,125 +333,142 @@ const svg = d3.select("#vis2")
 .attr("width", 650)
 .attr("height", 650);
 
+function spider_hover(event, d) {
+  // TO DO: 
+  d3.select(this).classed("yes_border"); //todo: should class everything in neighborNodes after resetVis
+  
+  tooltip.style("opacity", 1);
+}
 
-function draw(id) {//todo: draw should be modified to not take in an id and just draw all nodes in neighborNodes[]
 
+
+function draw(neighborNodes) {//todo: draw should be modified to not take in an id and just draw all nodes in neighborNodes[]
   svg.selectAll("*").remove();
-
-  const acoustincness = id.acousticness;
-  const danceability = id.danceability;
-  const energy = id.energy;
-  const instrumentalness = id.instrumentalness;
-  const liveness = id.liveness;
-  const speechiness = id.speechiness;
-  const valence = id.valence;
-  
-  // removed tempo because it's not from 0 - 1 
-  
   let features = ["Acousticness", "Danceability", "Energy", "Instrumentalness", "Liveness", "Speechiness", "Valence"];
-  let information = [acoustincness, danceability, energy, instrumentalness, liveness, speechiness, valence];
-  
-  console.log(information)
-  
   let data = [];
-  
-  let point = {};
-  point["Acousticness"] = information[0] * 10;
-  point["Danceability"] = information[1] * 10;
-  point["Energy"] = information[2] * 10;
-  point["Instrumentalness"] = information[3] * 10;
-  point["Liveness"] = information[4] * 10;
-  point["Speechiness"] = information[5] * 10;
-  point["Valence"] = information[6] * 10;
-  
-  data.push(point);
-  
-
-  
-  let radialScale = d3.scaleLinear()
-  .domain([0, 10])
-  .range([0, 250]);
-  let ticks = [2, 4, 6, 8, 10];
-  
-  
-  
-  ticks.forEach(t =>
-    svg.append("circle")
-    .attr("cx", 300)
-    .attr("cy", 300)
-    .attr("fill", "none")
-    .attr("stroke", "gray")
-    .attr("r", radialScale(t))
-    );
-
-  ticks.forEach(t =>
-    svg.append("text")
-    .attr("x", 305)
-    .attr("y", 300 - radialScale(t))
-    .text((t / 10).toString())
-    );
+  console.log('ACOUSTICNESS' + neighborNodes[0].acousticness)
 
 
-  function angleToCoordinate(angle, value) {
-    let x = Math.cos(angle) * radialScale(value);
-    let y = Math.sin(angle) * radialScale(value);
-    return { "x": 300 + x, "y": 300 - y };
+  for(let i=0;i<neighborNodes.length;i++) {
+    let point = {};
+
+    const acoustincness = neighborNodes[i].acousticness;
+    const danceability = neighborNodes[i].danceability;
+    const energy = neighborNodes[i].energy;
+    const instrumentalness = neighborNodes[i].instrumentalness;
+    const liveness = neighborNodes[i].liveness;
+    const speechiness = neighborNodes[i].speechiness;
+    const valence = neighborNodes[i].valence;
+    
+    // removed tempo because it's not from 0 - 1 
+    
+
+    let information = [acoustincness, danceability, energy, instrumentalness, liveness, speechiness, valence];
+    
+    console.log('INFORMTION' +information)
+    
+    point["Acousticness"] = information[0] * 10;
+    point["Danceability"] = information[1] * 10;
+    point["Energy"] = information[2] * 10;
+    point["Instrumentalness"] = information[3] * 10;
+    point["Liveness"] = information[4] * 10;
+    point["Speechiness"] = information[5] * 10;
+    point["Valence"] = information[6] * 10;
+    
+    data.push(point);
+  }
+  console.log("INSIDE DRAW" +data);
+
+
+    let radialScale = d3.scaleLinear()
+    .domain([0, 10])
+    .range([0, 250]);
+    let ticks = [2, 4, 6, 8, 10];
+    
+    
+    
+    ticks.forEach(t =>
+      svg.append("circle")
+      .attr("cx", 300)
+      .attr("cy", 300)
+      .attr("fill", "none")
+      .attr("stroke", "gray")
+      .attr("r", radialScale(t))
+      );
+  
+    ticks.forEach(t =>
+      svg.append("text")
+      .attr("x", 305)
+      .attr("y", 300 - radialScale(t))
+      .text((t / 10).toString())
+      );
+  
+  
+    function angleToCoordinate(angle, value) {
+      let x = Math.cos(angle) * radialScale(value);
+      let y = Math.sin(angle) * radialScale(value);
+      return { "x": 300 + x, "y": 300 - y };
+    }
+  
+    for (let i = 0; i < features.length; i++) {
+      let ft_name = features[i];
+      let angle = (Math.PI / 2) + (2 * Math.PI * i / features.length);
+      let line_coordinate = angleToCoordinate(angle, 10);
+      let label_coordinate = angleToCoordinate(angle, 10.5);
+  
+          //draw axis line
+          svg.append("line")
+          .attr("x1", 300)
+          .attr("y1", 300)
+          .attr("x2", line_coordinate.x)
+          .attr("y2", line_coordinate.y)
+          .attr("stroke", "black");
+          
+          //draw axis label
+          svg.append("text")
+          .attr("x", label_coordinate.x)
+          .attr("y", label_coordinate.y)
+          .text(ft_name);
+        }
+        
+        let line = d3.line()
+        .x(d => d.x)
+        .y(d => d.y);
+
+        // TODO: styling needs to be in CSS
+        let colors = ["blue", "green", "purple", "pink", "orange", "yellow", "red"];
+        
+        
+        function getPathCoordinates(data_point) {
+          let coordinates = [];
+          for (let i = 0; i < features.length; i++) {
+            let ft_name = features[i];
+            let angle = (Math.PI / 2) + (2 * Math.PI * i / features.length);
+            coordinates.push(angleToCoordinate(angle, data_point[ft_name]));
+          }
+          return coordinates;
+        }
+        
+        for (let i = 0; i < data.length; i++) {
+          let d = data[i];
+          let color = colors[i];
+          let coordinates = getPathCoordinates(d);
+          
+          //draw the path element
+          svg.append("path")
+          .datum(coordinates)
+          .attr("d", line)
+          .attr("stroke-width", 1)
+          .attr("stroke", color)
+          .attr("fill", color)
+          .attr("stroke-opacity", 1)
+          .attr("opacity", .4)
+          .on("mouseover", spider_hover);
+
+    
+      }
   }
 
-  for (let i = 0; i < features.length; i++) {
-    let ft_name = features[i];
-    let angle = (Math.PI / 2) + (2 * Math.PI * i / features.length);
-    let line_coordinate = angleToCoordinate(angle, 10);
-    let label_coordinate = angleToCoordinate(angle, 10.5);
-
-        //draw axis line
-        svg.append("line")
-        .attr("x1", 300)
-        .attr("y1", 300)
-        .attr("x2", line_coordinate.x)
-        .attr("y2", line_coordinate.y)
-        .attr("stroke", "black");
-        
-        //draw axis label
-        svg.append("text")
-        .attr("x", label_coordinate.x)
-        .attr("y", label_coordinate.y)
-        .text(ft_name);
-      }
-      
-      let line = d3.line()
-      .x(d => d.x)
-      .y(d => d.y);
-      let colors = ["blue"];
-      
-      
-      function getPathCoordinates(data_point) {
-        let coordinates = [];
-        for (let i = 0; i < features.length; i++) {
-          let ft_name = features[i];
-          let angle = (Math.PI / 2) + (2 * Math.PI * i / features.length);
-          coordinates.push(angleToCoordinate(angle, data_point[ft_name]));
-        }
-        return coordinates;
-      }
-      
-      for (let i = 0; i < data.length; i++) {
-        let d = data[i];
-        let color = colors[i];
-        let coordinates = getPathCoordinates(d);
-        
-        //draw the path element
-        svg.append("path")
-        .datum(coordinates)
-        .attr("d", line)
-        .attr("stroke-width", 1)
-        .attr("stroke", color)
-        .attr("fill", color)
-        .attr("stroke-opacity", 1)
-        .attr("opacity", .7);
-      }
-      
-    }
     
     
     

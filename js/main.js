@@ -10,6 +10,11 @@
 - hover over to display only connections to selected node (https://bl.ocks.org/martinjc/7aa53c7bf3e411238ac8aef280bd6581) or (https://observablehq.com/@john-guerra/force-directed-graph-with-link-highlighting)
 - get rid Song Added:
 
+Possible Additions:
+1. Toggle for each neighborNodes song to indicate whether it should be shown on spider chart or not
+2. Update node titles to song names and fix tooltip
+3. Drop down for number of nearest neighbors.
+
 */
 
 

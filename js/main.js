@@ -17,14 +17,10 @@
 import realData from "../data/data.json" assert { type: "json" };
 import data from "../data/fakeData.json" assert { type: "json" };
 
-const nodes = data.nodes; 
-const links = data.links;
-
-const nodes2 = realData.nodes;
-const links2 = realData.links;
+const nodes = realData.nodes; 
+const links = realData.links;
 
 console.log(links);
-console.log(links2);
 
 const FRAME_HEIGHT = 700;
 const FRAME_WIDTH = 700;
@@ -45,6 +41,7 @@ let activeLinks = [];
 
 console.log(activeLinks);
 console.log(realData.links);
+console.log(links);
 
 let NETWORKFRAME = d3.select("#vis1")
 .append("svg")
@@ -52,12 +49,16 @@ let NETWORKFRAME = d3.select("#vis1")
 .attr("width", FRAME_WIDTH)
 .attr("class", "frame");
 
-let simulation = d3.forceSimulation(activeNodes)
+let simulation = d3.forceSimulation(nodes)
+.nodes(nodes)
+.force('link', d3.forceLink(links).id(d => d.id));
+
+simulation = d3.forceSimulation(activeNodes)
 .nodes(activeNodes)
 //.force('radial', d3.forceRadial(200, FRAME_WIDTH, FRAME_HEIGHT))
 .force('charge', d3.forceManyBody().strength(-200))
 .force('center', d3.forceCenter(FRAME_WIDTH/3, FRAME_HEIGHT/3))
-//.force('link', d3.forceLink(activeLinks).id(d => d.id).distance(5))
+.force('link', d3.forceLink(activeLinks).id(d => d.id).distance(5))
 .on('tick', ticked);
 
 simulation.force('link', d3.forceLink()
@@ -189,17 +190,15 @@ function addNode(node) {
     activeNodes.push(node); //adds node to graph
     document.getElementById("songTitle").innerHTML = "Song Added: " + node.title_track;
   }
-  //console.log(activeLinks);
+
   resetLinks(node);
-  //(activeLinks);
   resetVis();
 }
 
 function addNeighbor(node) {
+  console.log("addNeighbor called");
   addNode(node);
   neighborNodes.push(node);
-  console.log("NN"+neighborNodes)
-
   }
 
   function resetVis() {
@@ -273,31 +272,31 @@ function point_clicked(event, d) {
       const id = d.id;
 
       neighborNodes = [];
+      addNeighbor(d);
       const tempNodes = realData.nodes;
       const tempLinks = realData.links;
       
       for (let i = 0; i < tempLinks.length; i++) {
-        if(tempLinks[i].source == id) {
+        if(tempLinks[i].source.id == id) {
           console.log("matched source");
 
           for (let j = 0; j < tempNodes.length; j++) {
-            if (tempLinks[i].target == tempNodes[j].id) {
+            if (tempLinks[i].target.id == tempNodes[j].id) {
               addNeighbor(tempNodes[j]);
-              console.log("neighbor added");
             }
           }
         }
       }
+      console.log(neighborNodes);
       draw(neighborNodes);
     }
 
     function resetLinks(node) {
-
       for (let i = 0; i < activeNodes.length; i++) {
         for (let k = 0; k < realData.links.length; k++) {
-            if (realData.links[k].source == activeNodes[i].id && realData.links[k].target == node.id) {
+            if (realData.links[k].source.id == activeNodes[i].id && realData.links[k].target.id == node.id) {
               activeLinks.push(realData.links[k]);
-            } else if (realData.links[k].target == activeNodes[i].id && realData.links[k].source == node.id) {
+            } else if (realData.links[k].target.id == activeNodes[i].id && realData.links[k].source.id == node.id) {
               activeLinks.push(realData.links[k]);
             }
           }

@@ -90,27 +90,25 @@ let nodeElements = NETWORKFRAME
 .on("mouseleave", node_hover_out)
 .on("click", point_clicked)
 .attr('fill', 'yellow')
-.call(d3
-<<<<<<< HEAD
-  .drag()
-  .on("start", dragstarted)
-  .on("drag", dragged)
-  .on("end", dragended));
-=======
-        .drag()
-        .on("start", dragstarted)
-        .on("drag", dragged)
-        .on("end", dragended));
-        // TESTING FOR DISPLAYING NEAREST NODE CONNECTIONS
-        // .on("mouseenter", (evt, d) => {
-        //   linkElements
-        //     .attr("display", "none")
-        //     .filter(l => l.source.id === d.id || l.target.id === d.id)
-        //     .attr("display", "block");
-        // })
-        // .on("mouseleave", evt => {
-        //   linkElements.attr("display", "block");
-        // });
+.call(d3)
+.drag()
+.on("start", dragstarted)
+.on("drag", dragged)
+.on("end", dragended)
+.drag()
+.on("start", dragstarted)
+.on("drag", dragged)
+.on("end", dragended);
+// TESTING FOR DISPLAYING NEAREST NODE CONNECTIONS
+// .on("mouseenter", (evt, d) => {
+//   linkElements
+//     .attr("display", "none")
+//     .filter(l => l.source.id === d.id || l.target.id === d.id)
+//     .attr("display", "block");
+// })
+// .on("mouseleave", evt => {
+//   linkElements.attr("display", "block");
+// });
 
 let textElement = NETWORKFRAME
 .append("g")
@@ -127,7 +125,6 @@ function ticked() {
   .attr("y1", d => d.source.y)
   .attr("x2", d => d.target.x)
   .attr("y2", d => d.target.y);
->>>>>>> master
   
   let textElement = NETWORKFRAME
   .append("g")
@@ -138,7 +135,6 @@ function ticked() {
   .attr('pointer-events', 'none')
   .text(d => d.id);
   
-<<<<<<< HEAD
   function ticked() {
     linkElements
     .attr("x1", d => d.source.x)
@@ -165,11 +161,7 @@ function ticked() {
   .style("width", "125px")
   .style("height", "72px")
   .style("text-align", "center")
-  .style("font-size", "12px");
-=======
-  textElement
-  .attr("x", d => d.x - 5)
-  .attr("y", d => d.y + 5);
+  .style("font-size", "12px")
 }
 
 let tooltip = d3.select("#vis1")
@@ -191,22 +183,20 @@ document.getElementById("button").addEventListener("click", buttonClicked);
 function node_hover_over(event, d) {
   // add 'hover' functionality
   // on mouseover, change to green  
-
+  
   d3.select(event.currentTarget)
   .style("fill", "green");
   
   tooltip.style("opacity", 1);
-
+  
 }
 
 function node_move(event, d) {
   // add 'hover' tooltop movement functionality and text to the tooltip
   tooltip.html("Category: " + d.id + "<p>Value: " + d.genre_top + "</p><p>Listens: " + d.listens + "</p>");
->>>>>>> master
   
   document.getElementById("button").addEventListener("click", buttonClicked);
   
-<<<<<<< HEAD
   function node_hover_over(event, d) {
     // add 'hover' functionality
     // on mouseover, change to green  
@@ -255,42 +245,40 @@ function node_move(event, d) {
     } else {
       alert("Song not found :(");
     }
-=======
-  // hides the tooltip
-  tooltip.style("opacity", 0);
-
-}
-
-function buttonClicked() {
-  const songTitle = document.getElementById('information').value; // gets the information from the textbox
-  document.getElementById('information').value = ""; // sets textbox to "" 
+    // hides the tooltip
+    tooltip.style("opacity", 0);
+    
+  }
   
-  if (findInformationWithSong(songTitle) != -1) {
-    const node = findInformationWithSong(songTitle)
-    // draw(node, svg); //todo: this can be removed when we integrate linking
+  function buttonClicked() {
+    const songTitle = document.getElementById('information').value; // gets the information from the textbox
+    document.getElementById('information').value = ""; // sets textbox to "" 
+    
+    if (findInformationWithSong(songTitle) != -1) {
+      const node = findInformationWithSong(songTitle)
+      // draw(node, svg); //todo: this can be removed when we integrate linking
+      addNode(node);
+    } else {
+      alert("Song not found :(");
+    }
+  }
+  
+  function addNode(node) {
+    console.log(node);
+    if (!activeNodes.reduce((prev, curr) => (curr.id == node.id) || (prev), false)) {
+      //console.log("made it");
+      activeNodes.push(node); //adds node to graph
+      document.getElementById("songTitle").innerHTML = "Song Added: " + node.title_track;
+    }
+    
+    resetLinks(node);
+    resetVis();
+  }
+  
+  function addNeighbor(node) {
+    console.log("addNeighbor called");
     addNode(node);
-  } else {
-    alert("Song not found :(");
-  }
-}
-
-function addNode(node) {
-  console.log(node);
-  if (!activeNodes.reduce((prev, curr) => (curr.id == node.id) || (prev), false)) {
-    //console.log("made it");
-    activeNodes.push(node); //adds node to graph
-    document.getElementById("songTitle").innerHTML = "Song Added: " + node.title_track;
-  }
-
-  resetLinks(node);
-  resetVis();
-}
-
-function addNeighbor(node) {
-  console.log("addNeighbor called");
-  addNode(node);
-  neighborNodes.push(node);
->>>>>>> master
+    neighborNodes.push(node);
   }
   
   function addNode(node) {
@@ -369,7 +357,6 @@ function addNeighbor(node) {
     }
     
     function findInformationWithSong(songTitle) {
-<<<<<<< HEAD
       for (let i = 0; i < realData.nodes.length; i++) {
         // console.log(nodes[i].title_track)
         if(realData.nodes[i].title_track == songTitle) {
@@ -377,384 +364,374 @@ function addNeighbor(node) {
         }
       }
       return -1;
-=======
       for (let i = 0; i < nodes.length; i++) {
-    // console.log(nodes[i].title_track)
-    if(nodes[i].title_track == songTitle) {
-      return nodes[i]
->>>>>>> master
-    }
-    
-    function point_clicked(event, d) {
-      // css toggle; when point is clicked, 'yes_border' is activated
-<<<<<<< HEAD
-      d3.select(this).classed("yes_border", d3.select(this).classed("yes_border") ? false : true); //todo: should class everything in neighborNodes after resetVis
-      
-=======
-      //d3.select("circle").classed("yes_border", d3.select(this).classed("yes_border") ? false : true); //todo: should class everything in neighborNodes after resetVis
-
->>>>>>> master
-      const id = d.id;
-      
-      neighborNodes = [];
-      addNeighbor(d);
-      const tempNodes = nodes;
-      const tempLinks = links;
-      
-      for (let i = 0; i < tempLinks.length; i++) {
-        if(tempLinks[i].source.id == id) {
-          console.log("matched source");
+        // console.log(nodes[i].title_track)
+        if(nodes[i].title_track == songTitle) {
+          return nodes[i]
+        }
+        
+        function point_clicked(event, d) {
+          // css toggle; when point is clicked, 'yes_border' is activated
+          d3.select(this).classed("yes_border", d3.select(this).classed("yes_border") ? false : true); //todo: should class everything in neighborNodes after resetVis
           
-          for (let j = 0; j < tempNodes.length; j++) {
-            if (tempLinks[i].target.id == tempNodes[j].id) {
-              addNeighbor(tempNodes[j]);
+          //d3.select("circle").classed("yes_border", d3.select(this).classed("yes_border") ? false : true); //todo: should class everything in neighborNodes after resetVis
+          
+          const id = d.id;
+          
+          neighborNodes = [];
+          addNeighbor(d);
+          const tempNodes = nodes;
+          const tempLinks = links;
+          
+          for (let i = 0; i < tempLinks.length; i++) {
+            if(tempLinks[i].source.id == id) {
+              console.log("matched source");
+              
+              for (let j = 0; j < tempNodes.length; j++) {
+                if (tempLinks[i].target.id == tempNodes[j].id) {
+                  addNeighbor(tempNodes[j]);
+                }
+              }
             }
           }
+          console.log(neighborNodes);
+          draw(neighborNodes);
         }
-      }
-      console.log(neighborNodes);
-      draw(neighborNodes);
-    }
-    
-    function resetLinks(node) {
-<<<<<<< HEAD
-      
-      for (let i = 0; i < activeNodes.length; i++) {
-        for (let k = 0; k < realData.links.length; k++) {
-          if (realData.links[k].source == activeNodes[i].id && realData.links[k].target == node.id) {
-            activeLinks.push(realData.links[k]);
-          } else if (realData.links[k].target == activeNodes[i].id && realData.links[k].source == node.id) {
-            activeLinks.push(realData.links[k]);
-=======
-      for (let i = 0; i < activeNodes.length; i++) {
-        for (let k = 0; k < links.length; k++) {
-            if (links[k].source.id == activeNodes[i].id && links[k].target.id == node.id) {
-              activeLinks.push(links[k]);
-            } else if (links[k].target.id == activeNodes[i].id && links[k].source.id == node.id) {
-              activeLinks.push(links[k]);
+        
+        function resetLinks(node) {
+          
+          for (let i = 0; i < activeNodes.length; i++) {
+            for (let k = 0; k < realData.links.length; k++) {
+              if (realData.links[k].source == activeNodes[i].id && realData.links[k].target == node.id) {
+                activeLinks.push(realData.links[k]);
+              } else if (realData.links[k].target == activeNodes[i].id && realData.links[k].source == node.id) {
+                activeLinks.push(realData.links[k]);
+                for (let i = 0; i < activeNodes.length; i++) {
+                  for (let k = 0; k < links.length; k++) {
+                    if (links[k].source.id == activeNodes[i].id && links[k].target.id == node.id) {
+                      activeLinks.push(links[k]);
+                    } else if (links[k].target.id == activeNodes[i].id && links[k].source.id == node.id) {
+                      activeLinks.push(links[k]);
+                    }
+                  }
+                }
+              }
             }
->>>>>>> master
-          }
-        }
-      }
-    }
-    
-    // restarts visual when drag actions starts
-    function dragstarted(event, d) {
-      if (!event.active) simulation.alphaTarget(0.3).restart();
-      d.fy = d.y;
-      d.fx = d.x;
-    }
-<<<<<<< HEAD
-    
-    //axes change as node gets dragged
-    function dragged(event, d) {
-      d.fx = event.x;
-      d.fy = event.y;
-    }
-    
-    //the targeted node is released when the drag action ends
-    function dragended(event, d) {
-      if (!event.active) simulation.alphaTarget(0);
-      d.fx = null;
-      d.fy = null;
-    }
-    
-    // -----------------PLOT 2----------------
-    
-    
-    
-    
-    
-    function draw(id) {
-      
-      svg.selectAll("*").remove();
-      
-      const acoustincness = id.acousticness;
-      const danceability = id.danceability;
-      const energy = id.energy;
-      const instrumentalness = id.instrumentalness;
-      const liveness = id.liveness;
-      const speechiness = id.speechiness;
-      const valence = id.valence;
-      
-      // removed tempo because it's not from 0 - 1 
-      
-      let features = ["Acousticness", "Danceability", "Energy", "Instrumentalness", "Liveness", "Speechiness", "Valence"];
-      let information = [acoustincness, danceability, energy, instrumentalness, liveness, speechiness, valence];
-      
-      console.log(information)
-      
-      let data = [];
-      
-      let point = {};
-      point["Acousticness"] = information[0] * 10;
-      point["Danceability"] = information[1] * 10;
-      point["Energy"] = information[2] * 10;
-      point["Instrumentalness"] = information[3] * 10;
-      point["Liveness"] = information[4] * 10;
-      point["Speechiness"] = information[5] * 10;
-      point["Valence"] = information[6] * 10;
-      
-      data.push(point);
-      
-      
-      
-      
-      let radialScale = d3.scaleLinear()
-      .domain([0, 10])
-      .range([0, 250]);
-      let ticks = [2, 4, 6, 8, 10];
-      
-      
-      
-      ticks.forEach(t =>
-        svg.append("circle")
-        .attr("cx", 300)
-        .attr("cy", 300)
-        .attr("fill", "none")
-        .attr("stroke", "white")
-        .attr("r", radialScale(t))
-        );
-        
-        ticks.forEach(t =>
-          svg.append("text")
-          .attr("x", 305)
-          .attr("y", 300 - radialScale(t))
-          .text((t / 10).toString())
-          .attr("stroke", "white")
-          .attr("stroke-width", 1.3)
-          );
-          
-          
-          function angleToCoordinate(angle, value) {
-            let x = Math.cos(angle) * radialScale(value);
-            let y = Math.sin(angle) * radialScale(value);
-            return { "x": 300 + x, "y": 300 - y };
-          }
-          
-          for (let i = 0; i < features.length; i++) {
-            let ft_name = features[i];
-            let angle = (Math.PI / 2) + (2 * Math.PI * i / features.length);
-            let line_coordinate = angleToCoordinate(angle, 10);
-            let label_coordinate = angleToCoordinate(angle, 10.5);
             
-            //draw axis line
-            svg.append("line")
-            .attr("x1", 300)
-            .attr("y1", 300)
-            .attr("x2", line_coordinate.x)
-            .attr("y2", line_coordinate.y)
-            .attr("stroke", "white");
-            
-            //draw axis label
-            svg.append("text")
-            .attr("x", label_coordinate.x)
-            .attr("y", label_coordinate.y)
-            .text(ft_name)
-            .attr("stroke", "white")
-            .attr("stroke-width", 1.3);
-            
-          }
-          
-          let line = d3.line()
-          .x(d => d.x)
-          .y(d => d.y);
-          let colors = ["red"];
-          
-          
-          function getPathCoordinates(data_point) {
-            let coordinates = [];
-            for (let i = 0; i < features.length; i++) {
-              let ft_name = features[i];
-              let angle = (Math.PI / 2) + (2 * Math.PI * i / features.length);
-              coordinates.push(angleToCoordinate(angle, data_point[ft_name]));
+            // restarts visual when drag actions starts
+            function dragstarted(event, d) {
+              if (!event.active) simulation.alphaTarget(0.3).restart();
+              d.fy = d.y;
+              d.fx = d.x;
             }
-            return coordinates;
-          }
-          
-          for (let i = 0; i < data.length; i++) {
-            let d = data[i];
-            let color = colors[i];
-            let coordinates = getPathCoordinates(d);
             
-            //draw the path element
-            svg.append("path")
-            .datum(coordinates)
-            .attr("d", line)
-            .attr("stroke-width", 1)
-            .attr("stroke", color)
-            .attr("fill", color)
-            .attr("stroke-opacity", 1)
-            .attr("opacity", .6)
-          }
-          
-        }
-=======
-
-  //axes change as node gets dragged
-  function dragged(event, d) {
-    d.fx = event.x;
-    d.fy = event.y;
-  }
-
-  //the targeted node is released when the drag action ends
-  function dragended(event, d) {
-    if (!event.active) simulation.alphaTarget(0);
-    d.fx = null;
-    d.fy = null;
-  }
-
-// -----------------PLOT 2----------------
-
-
-
-const svg = d3.select("#vis2")
-.append("svg")
-.attr("width", 650)
-.attr("height", 650);
-
-function spider_hover(event, d) {
-  // TO DO: 
-  d3.select(this).classed("yes_border"); //todo: should class everything in neighborNodes after resetVis
-  
-  tooltip.style("opacity", 1);
-}
-
-
-
-function draw(neighborNodes) {//todo: draw should be modified to not take in an id and just draw all nodes in neighborNodes[]
-  svg.selectAll("*").remove();
-  let features = ["Acousticness", "Danceability", "Energy", "Instrumentalness", "Liveness", "Speechiness", "Valence"];
-  let data = [];
-  console.log('ACOUSTICNESS' + neighborNodes[0].acousticness)
-
-
-  for(let i=0;i<neighborNodes.length;i++) {
-    let point = {};
-
-    const acoustincness = neighborNodes[i].acousticness;
-    const danceability = neighborNodes[i].danceability;
-    const energy = neighborNodes[i].energy;
-    const instrumentalness = neighborNodes[i].instrumentalness;
-    const liveness = neighborNodes[i].liveness;
-    const speechiness = neighborNodes[i].speechiness;
-    const valence = neighborNodes[i].valence;
-    
-    // removed tempo because it's not from 0 - 1 
-    
-
-    let information = [acoustincness, danceability, energy, instrumentalness, liveness, speechiness, valence];
-    
-    console.log('INFORMTION' +information)
-    
-    point["Acousticness"] = information[0] * 10;
-    point["Danceability"] = information[1] * 10;
-    point["Energy"] = information[2] * 10;
-    point["Instrumentalness"] = information[3] * 10;
-    point["Liveness"] = information[4] * 10;
-    point["Speechiness"] = information[5] * 10;
-    point["Valence"] = information[6] * 10;
-    
-    data.push(point);
-  }
-  console.log("INSIDE DRAW" +data);
-
-
-    let radialScale = d3.scaleLinear()
-    .domain([0, 10])
-    .range([0, 250]);
-    let ticks = [2, 4, 6, 8, 10];
-    
-    
-    
-    ticks.forEach(t =>
-      svg.append("circle")
-      .attr("cx", 300)
-      .attr("cy", 300)
-      .attr("fill", "none")
-      .attr("stroke", "gray")
-      .attr("r", radialScale(t))
-      );
-  
-    ticks.forEach(t =>
-      svg.append("text")
-      .attr("x", 305)
-      .attr("y", 300 - radialScale(t))
-      .text((t / 10).toString())
-      );
-  
-  
-    function angleToCoordinate(angle, value) {
-      let x = Math.cos(angle) * radialScale(value);
-      let y = Math.sin(angle) * radialScale(value);
-      return { "x": 300 + x, "y": 300 - y };
-    }
-  
-    for (let i = 0; i < features.length; i++) {
-      let ft_name = features[i];
-      let angle = (Math.PI / 2) + (2 * Math.PI * i / features.length);
-      let line_coordinate = angleToCoordinate(angle, 10);
-      let label_coordinate = angleToCoordinate(angle, 10.5);
-  
-          //draw axis line
-          svg.append("line")
-          .attr("x1", 300)
-          .attr("y1", 300)
-          .attr("x2", line_coordinate.x)
-          .attr("y2", line_coordinate.y)
-          .attr("stroke", "black");
-          
-          //draw axis label
-          svg.append("text")
-          .attr("x", label_coordinate.x)
-          .attr("y", label_coordinate.y)
-          .text(ft_name);
-        }
-        
-        let line = d3.line()
-        .x(d => d.x)
-        .y(d => d.y);
-
-        // TODO: styling needs to be in CSS
-        let colors = ["blue", "green", "purple", "pink", "orange", "yellow", "red"];
-        
-        
-        function getPathCoordinates(data_point) {
-          let coordinates = [];
-          for (let i = 0; i < features.length; i++) {
-            let ft_name = features[i];
-            let angle = (Math.PI / 2) + (2 * Math.PI * i / features.length);
-            coordinates.push(angleToCoordinate(angle, data_point[ft_name]));
-          }
-          return coordinates;
-        }
-        
-        for (let i = 0; i < data.length; i++) {
-          let d = data[i];
-          let color = colors[i];
-          let coordinates = getPathCoordinates(d);
-          
-          //draw the path element
-          svg.append("path")
-          .datum(coordinates)
-          .attr("d", line)
-          .attr("stroke-width", 1)
-          .attr("stroke", color)
-          .attr("fill", color)
-          .attr("stroke-opacity", 1)
-          .attr("opacity", .4)
-          .on("mouseover", spider_hover);
-
-    
-      }
-  }
-
-    
-    
-    
-    // Food 
-    // Electric Ave 
-    // This World
-    
->>>>>>> master
+            //axes change as node gets dragged
+            function dragged(event, d) {
+              d.fx = event.x;
+              d.fy = event.y;
+            }
+            
+            //the targeted node is released when the drag action ends
+            function dragended(event, d) {
+              if (!event.active) simulation.alphaTarget(0);
+              d.fx = null;
+              d.fy = null;
+            }
+            
+            // -----------------PLOT 2----------------
+            
+            
+            
+            
+            
+            function draw(id) {
+              
+              svg.selectAll("*").remove();
+              
+              const acoustincness = id.acousticness;
+              const danceability = id.danceability;
+              const energy = id.energy;
+              const instrumentalness = id.instrumentalness;
+              const liveness = id.liveness;
+              const speechiness = id.speechiness;
+              const valence = id.valence;
+              
+              // removed tempo because it's not from 0 - 1 
+              
+              let features = ["Acousticness", "Danceability", "Energy", "Instrumentalness", "Liveness", "Speechiness", "Valence"];
+              let information = [acoustincness, danceability, energy, instrumentalness, liveness, speechiness, valence];
+              
+              console.log(information)
+              
+              let data = [];
+              
+              let point = {};
+              point["Acousticness"] = information[0] * 10;
+              point["Danceability"] = information[1] * 10;
+              point["Energy"] = information[2] * 10;
+              point["Instrumentalness"] = information[3] * 10;
+              point["Liveness"] = information[4] * 10;
+              point["Speechiness"] = information[5] * 10;
+              point["Valence"] = information[6] * 10;
+              
+              data.push(point);
+              
+              
+              
+              
+              let radialScale = d3.scaleLinear()
+              .domain([0, 10])
+              .range([0, 250]);
+              let ticks = [2, 4, 6, 8, 10];
+              
+              
+              
+              ticks.forEach(t =>
+                svg.append("circle")
+                .attr("cx", 300)
+                .attr("cy", 300)
+                .attr("fill", "none")
+                .attr("stroke", "white")
+                .attr("r", radialScale(t))
+                );
+                
+                ticks.forEach(t =>
+                  svg.append("text")
+                  .attr("x", 305)
+                  .attr("y", 300 - radialScale(t))
+                  .text((t / 10).toString())
+                  .attr("stroke", "white")
+                  .attr("stroke-width", 1.3)
+                  );
+                  
+                  
+                  function angleToCoordinate(angle, value) {
+                    let x = Math.cos(angle) * radialScale(value);
+                    let y = Math.sin(angle) * radialScale(value);
+                    return { "x": 300 + x, "y": 300 - y };
+                  }
+                  
+                  for (let i = 0; i < features.length; i++) {
+                    let ft_name = features[i];
+                    let angle = (Math.PI / 2) + (2 * Math.PI * i / features.length);
+                    let line_coordinate = angleToCoordinate(angle, 10);
+                    let label_coordinate = angleToCoordinate(angle, 10.5);
+                    
+                    //draw axis line
+                    svg.append("line")
+                    .attr("x1", 300)
+                    .attr("y1", 300)
+                    .attr("x2", line_coordinate.x)
+                    .attr("y2", line_coordinate.y)
+                    .attr("stroke", "white");
+                    
+                    //draw axis label
+                    svg.append("text")
+                    .attr("x", label_coordinate.x)
+                    .attr("y", label_coordinate.y)
+                    .text(ft_name)
+                    .attr("stroke", "white")
+                    .attr("stroke-width", 1.3);
+                    
+                  }
+                  
+                  let line = d3.line()
+                  .x(d => d.x)
+                  .y(d => d.y);
+                  let colors = ["red"];
+                  
+                  
+                  function getPathCoordinates(data_point) {
+                    let coordinates = [];
+                    for (let i = 0; i < features.length; i++) {
+                      let ft_name = features[i];
+                      let angle = (Math.PI / 2) + (2 * Math.PI * i / features.length);
+                      coordinates.push(angleToCoordinate(angle, data_point[ft_name]));
+                    }
+                    return coordinates;
+                  }
+                  
+                  for (let i = 0; i < data.length; i++) {
+                    let d = data[i];
+                    let color = colors[i];
+                    let coordinates = getPathCoordinates(d);
+                    
+                    //draw the path element
+                    svg.append("path")
+                    .datum(coordinates)
+                    .attr("d", line)
+                    .attr("stroke-width", 1)
+                    .attr("stroke", color)
+                    .attr("fill", color)
+                    .attr("stroke-opacity", 1)
+                    .attr("opacity", .6)
+                  }
+                  
+                }
+                
+                //axes change as node gets dragged
+                function dragged(event, d) {
+                  d.fx = event.x;
+                  d.fy = event.y;
+                }
+                
+                //the targeted node is released when the drag action ends
+                function dragended(event, d) {
+                  if (!event.active) simulation.alphaTarget(0);
+                  d.fx = null;
+                  d.fy = null;
+                }
+                
+                // -----------------PLOT 2----------------
+                
+                
+                
+                const svg = d3.select("#vis2")
+                .append("svg")
+                .attr("width", 650)
+                .attr("height", 650);
+                
+                function spider_hover(event, d) {
+                  // TO DO: 
+                  d3.select(this).classed("yes_border"); //todo: should class everything in neighborNodes after resetVis
+                  
+                  tooltip.style("opacity", 1);
+                }
+                
+                
+                
+                function draw(neighborNodes) {//todo: draw should be modified to not take in an id and just draw all nodes in neighborNodes[]
+                  svg.selectAll("*").remove();
+                  let features = ["Acousticness", "Danceability", "Energy", "Instrumentalness", "Liveness", "Speechiness", "Valence"];
+                  let data = [];
+                  console.log('ACOUSTICNESS' + neighborNodes[0].acousticness)
+                  
+                  
+                  for(let i=0;i<neighborNodes.length;i++) {
+                    let point = {};
+                    
+                    const acoustincness = neighborNodes[i].acousticness;
+                    const danceability = neighborNodes[i].danceability;
+                    const energy = neighborNodes[i].energy;
+                    const instrumentalness = neighborNodes[i].instrumentalness;
+                    const liveness = neighborNodes[i].liveness;
+                    const speechiness = neighborNodes[i].speechiness;
+                    const valence = neighborNodes[i].valence;
+                    
+                    // removed tempo because it's not from 0 - 1 
+                    
+                    
+                    let information = [acoustincness, danceability, energy, instrumentalness, liveness, speechiness, valence];
+                    
+                    console.log('INFORMTION' +information)
+                    
+                    point["Acousticness"] = information[0] * 10;
+                    point["Danceability"] = information[1] * 10;
+                    point["Energy"] = information[2] * 10;
+                    point["Instrumentalness"] = information[3] * 10;
+                    point["Liveness"] = information[4] * 10;
+                    point["Speechiness"] = information[5] * 10;
+                    point["Valence"] = information[6] * 10;
+                    
+                    data.push(point);
+                  }
+                  console.log("INSIDE DRAW" +data);
+                  
+                  
+                  let radialScale = d3.scaleLinear()
+                  .domain([0, 10])
+                  .range([0, 250]);
+                  let ticks = [2, 4, 6, 8, 10];
+                  
+                  
+                  
+                  ticks.forEach(t =>
+                    svg.append("circle")
+                    .attr("cx", 300)
+                    .attr("cy", 300)
+                    .attr("fill", "none")
+                    .attr("stroke", "gray")
+                    .attr("r", radialScale(t))
+                    );
+                    
+                    ticks.forEach(t =>
+                      svg.append("text")
+                      .attr("x", 305)
+                      .attr("y", 300 - radialScale(t))
+                      .text((t / 10).toString())
+                      );
+                      
+                      
+                      function angleToCoordinate(angle, value) {
+                        let x = Math.cos(angle) * radialScale(value);
+                        let y = Math.sin(angle) * radialScale(value);
+                        return { "x": 300 + x, "y": 300 - y };
+                      }
+                      
+                      for (let i = 0; i < features.length; i++) {
+                        let ft_name = features[i];
+                        let angle = (Math.PI / 2) + (2 * Math.PI * i / features.length);
+                        let line_coordinate = angleToCoordinate(angle, 10);
+                        let label_coordinate = angleToCoordinate(angle, 10.5);
+                        
+                        //draw axis line
+                        svg.append("line")
+                        .attr("x1", 300)
+                        .attr("y1", 300)
+                        .attr("x2", line_coordinate.x)
+                        .attr("y2", line_coordinate.y)
+                        .attr("stroke", "black");
+                        
+                        //draw axis label
+                        svg.append("text")
+                        .attr("x", label_coordinate.x)
+                        .attr("y", label_coordinate.y)
+                        .text(ft_name);
+                      }
+                      
+                      let line = d3.line()
+                      .x(d => d.x)
+                      .y(d => d.y);
+                      
+                      // TODO: styling needs to be in CSS
+                      let colors = ["blue", "green", "purple", "pink", "orange", "yellow", "red"];
+                      
+                      
+                      function getPathCoordinates(data_point) {
+                        let coordinates = [];
+                        for (let i = 0; i < features.length; i++) {
+                          let ft_name = features[i];
+                          let angle = (Math.PI / 2) + (2 * Math.PI * i / features.length);
+                          coordinates.push(angleToCoordinate(angle, data_point[ft_name]));
+                        }
+                        return coordinates;
+                      }
+                      
+                      for (let i = 0; i < data.length; i++) {
+                        let d = data[i];
+                        let color = colors[i];
+                        let coordinates = getPathCoordinates(d);
+                        
+                        //draw the path element
+                        svg.append("path")
+                        .datum(coordinates)
+                        .attr("d", line)
+                        .attr("stroke-width", 1)
+                        .attr("stroke", color)
+                        .attr("fill", color)
+                        .attr("stroke-opacity", 1)
+                        .attr("opacity", .4)
+                        .on("mouseover", spider_hover);
+                        
+                        
+                      }
+                    }
+                    
+                    
+                    
+                    
+                    // Food 
+                    // Electric Ave 
+                    // This World
+                    
+                    

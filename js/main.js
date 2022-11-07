@@ -14,11 +14,10 @@
 
 
 // ----------CONSTANTS FOR PAGE SETUP----------------
-import realData from "../data/data.json" assert { type: "json" };
-import data from "../data/fakeData.json" assert { type: "json" };
+import data from "../data/data.json" assert { type: "json" };
 
-const nodes = realData.nodes; 
-const links = realData.links;
+const nodes = data.nodes; 
+const links = data.links;
 
 console.log(links);
 
@@ -40,8 +39,8 @@ let neighborNodes = [];
 let activeLinks = [];
 
 console.log(activeLinks);
-console.log(realData.links);
 console.log(links);
+console.log(data.links);
 
 let NETWORKFRAME = d3.select("#vis1")
 .append("svg")
@@ -256,10 +255,10 @@ function addNeighbor(node) {
     }
 
     function findInformationWithSong(songTitle) {
-      for (let i = 0; i < realData.nodes.length; i++) {
+      for (let i = 0; i < nodes.length; i++) {
     // console.log(nodes[i].title_track)
-    if(realData.nodes[i].title_track == songTitle) {
-      return realData.nodes[i]
+    if(nodes[i].title_track == songTitle) {
+      return nodes[i]
     }
   }
   return -1;
@@ -273,8 +272,8 @@ function point_clicked(event, d) {
 
       neighborNodes = [];
       addNeighbor(d);
-      const tempNodes = realData.nodes;
-      const tempLinks = realData.links;
+      const tempNodes = nodes;
+      const tempLinks = links;
       
       for (let i = 0; i < tempLinks.length; i++) {
         if(tempLinks[i].source.id == id) {
@@ -293,11 +292,11 @@ function point_clicked(event, d) {
 
     function resetLinks(node) {
       for (let i = 0; i < activeNodes.length; i++) {
-        for (let k = 0; k < realData.links.length; k++) {
-            if (realData.links[k].source.id == activeNodes[i].id && realData.links[k].target.id == node.id) {
-              activeLinks.push(realData.links[k]);
-            } else if (realData.links[k].target.id == activeNodes[i].id && realData.links[k].source.id == node.id) {
-              activeLinks.push(realData.links[k]);
+        for (let k = 0; k < links.length; k++) {
+            if (links[k].source.id == activeNodes[i].id && links[k].target.id == node.id) {
+              activeLinks.push(links[k]);
+            } else if (links[k].target.id == activeNodes[i].id && links[k].source.id == node.id) {
+              activeLinks.push(links[k]);
             }
           }
       }

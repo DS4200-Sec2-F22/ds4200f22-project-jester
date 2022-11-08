@@ -113,7 +113,7 @@ let textElement = NETWORKFRAME
 .enter()
 .append("text")
 .attr('pointer-events', 'none')
-.text(d => d.id);
+.text(d => d.title_track);
 
 function ticked() {
   linkElements
@@ -254,7 +254,7 @@ function addNeighbor(node) {
       .enter()
       .append("text")
       .attr('pointer-events', 'none')
-      .text(d => d.id);
+      .text(d => d.title_track);
 
       console.log(activeLinks);
     }

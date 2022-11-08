@@ -43,6 +43,10 @@ let activeNodes = [];
 let neighborNodes = [];
 let activeLinks = [];
 
+let defaultNodeColor = '#A7C7E7'
+let hoverNodeColor = '#78A2CC'
+let defaultLinkColor = 'lightgrey'
+
 console.log(activeLinks);
 console.log(links);
 console.log(data.links);
@@ -71,12 +75,12 @@ simulation.force('link', d3.forceLink()
 let linkElements = NETWORKFRAME
 .append('g')
 .attr("fill", "none")
-.attr('stroke-width', 2)
+.attr('stroke-width', 1)
 .selectAll('line')
 .data(activeLinks)
 .enter()
 .append('line')
-.attr('stroke', 'black');
+.attr('stroke', defaultLinkColor);
 
 let nodeElements = NETWORKFRAME
 .append('g')
@@ -89,7 +93,9 @@ let nodeElements = NETWORKFRAME
 .on("mousemove", node_move)
 .on("mouseleave", node_hover_out)
 .on("click", point_clicked)
-.attr('fill', 'red')
+.attr('fill', defaultNodeColor)
+.attr('stroke', defaultLinkColor)
+.attr('stroke-width', 1)
 .call(d3
         .drag()
         .on("start", dragstarted)
@@ -112,6 +118,7 @@ let textElement = NETWORKFRAME
 .data(activeNodes)
 .enter()
 .append("text")
+.style("font", "14px sans-serif")
 .attr('pointer-events', 'none')
 .text(d => d.title_track);
 
@@ -150,9 +157,15 @@ function node_hover_over(event, d) {
   // on mouseover, change to green  
 
   d3.select(event.currentTarget)
-  .style("fill", "green");
+  .style("fill", hoverNodeColor);
   
   tooltip.style("opacity", 1);
+
+  linkElements
+          .attr("display", "none")
+          .filter(l => l.source.id === d.id || l.target.id === d.id)
+          .attr("display", "block")
+          .attr("stroke", hoverNodeColor);
 
 }
 
@@ -167,10 +180,14 @@ function node_move(event, d) {
 function node_hover_out(event, d) {
   // on mouseleave, change back to the original color 
   d3.select(event.currentTarget)
-  .style("fill", "red");
+  .style("fill", defaultNodeColor);
   
   // hides the tooltip
   tooltip.style("opacity", 0);
+
+  linkElements
+    .attr("display", "block")
+    .attr("stroke", defaultLinkColor)
 
 }
 
@@ -224,12 +241,12 @@ function addNeighbor(node) {
       .strength(link => link.strength));
 
       linkElements = NETWORKFRAME
-      .attr('stroke-width', 2)
+      .attr('stroke-width', 1)
       .selectAll('line')
       .data(activeLinks)
       .enter()
       .append('line')
-      .attr('stroke', 'black');
+      .attr('stroke', defaultLinkColor);
 
       nodeElements = NETWORKFRAME
       .selectAll('circle')
@@ -241,7 +258,9 @@ function addNeighbor(node) {
       .on("mousemove", node_move)
       .on("mouseleave", node_hover_out)
       .on("click", point_clicked)
-      .attr('fill', 'red')
+      .attr('fill', defaultNodeColor)
+      .attr('stroke', defaultLinkColor)
+      .attr('stroke-width', 1)
       .call(d3
         .drag()
         .on("start", dragstarted)
@@ -253,6 +272,7 @@ function addNeighbor(node) {
       .data(activeNodes)
       .enter()
       .append("text")
+      .style("font", "14px sans-serif")
       .attr('pointer-events', 'none')
       .text(d => d.title_track);
 
@@ -329,18 +349,29 @@ function point_clicked(event, d) {
 
 // -----------------PLOT 2----------------
 
-
+let original_opacity = .4;
+let hover_opacity = .7;
+let colors = d3
+      .scaleOrdinal(
+        ["#ffd700",
+          "#ffb14e",
+          "#fa8775",
+          "#ea5f94",
+          "#cd34b5",
+          "#9d02d7",
+          "#0000ff"]);
 
 const svg = d3.select("#vis2")
 .append("svg")
 .attr("width", 650)
 .attr("height", 650);
 
-function spider_hover(event, d) {
-  // TO DO: 
-  d3.select(this).classed("yes_border"); //todo: should class everything in neighborNodes after resetVis
-  
-  tooltip.style("opacity", 1);
+function spider_mouseover(event, d) {
+     d3.select(event.currentTarget).style("opacity", hover_opacity);
+}
+ 
+function spider_mouseleave(event, d) {
+     d3.select(event.currentTarget).style("opacity", original_opacity);
 }
 
 
@@ -438,9 +469,7 @@ function draw(neighborNodes) {//todo: draw should be modified to not take in an 
         .x(d => d.x)
         .y(d => d.y);
 
-        // TODO: styling needs to be in CSS
-        let colors = ["blue", "green", "purple", "pink", "orange", "yellow", "red"];
-        
+
         
         function getPathCoordinates(data_point) {
           let coordinates = [];
@@ -454,7 +483,7 @@ function draw(neighborNodes) {//todo: draw should be modified to not take in an 
         
         for (let i = 0; i < data.length; i++) {
           let d = data[i];
-          let color = colors[i];
+          let color = colors(i);
           let coordinates = getPathCoordinates(d);
           
           //draw the path element
@@ -465,11 +494,44 @@ function draw(neighborNodes) {//todo: draw should be modified to not take in an 
           .attr("stroke", color)
           .attr("fill", color)
           .attr("stroke-opacity", 1)
-          .attr("opacity", .4)
-          .on("mouseover", spider_hover);
+          .attr("opacity", original_opacity)
+          .on("mouseover", spider_mouseover)
+          .on("mouseleave", spider_mouseleave);
 
     
       }
+
+                // get name of each neighbor node
+                function getSongNamesFromNeighbor(arr) {
+                  let listOfNames = []
+                  for(let i=0; i<arr.length; i++){
+                    listOfNames.push(arr[i].title_track)
+                  }
+                  return listOfNames;
+                }
+        
+        
+                // Add one dot in the legend for each name.
+                svg.selectAll("mydots")
+                  .data(getSongNamesFromNeighbor(neighborNodes))
+                  .enter()
+                  .append("circle")
+                    .attr("cx", MARGINS.left)
+                    .attr("cy", function(d,i){ return FRAME_HEIGHT-190 + i*25}) // 100 is where the first dot appears. 25 is the distance between dots
+                    .attr("r", 7)
+                    .style("fill", function(d, i){ return colors(i);})
+        
+                // Add one dot in the legend for each name.
+                svg.selectAll("mylabels")
+                  .data(getSongNamesFromNeighbor(neighborNodes))
+                  .enter()
+                  .append("text")
+                    .attr("x", MARGINS.left +20)
+                    .attr("y", function(d,i){ return FRAME_HEIGHT-190 + i*25}) // 100 is where the first dot appears. 25 is the distance between dots
+                    .style("fill", function(d, i){ return colors(i);})
+                    .text(function(d){ return d})
+                    .attr("text-anchor", "left")
+                    .style("alignment-baseline", "middle")
   }
 
     

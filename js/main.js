@@ -19,10 +19,11 @@ Possible Additions:
 
 
 // ----------CONSTANTS FOR PAGE SETUP----------------
-import data from "../data/data.json" assert { type: "json" };
+import realData from "../data/data.json" assert { type: "json" };
+import data from "../data/fakeData.json" assert { type: "json" };
 
-const nodes = data.nodes; 
-const links = data.links;
+const nodes = realData.nodes; 
+const links = realData.links;
 
 console.log(links);
 
@@ -44,8 +45,8 @@ let neighborNodes = [];
 let activeLinks = [];
 
 console.log(activeLinks);
+console.log(realData.links);
 console.log(links);
-console.log(data.links);
 
 let NETWORKFRAME = d3.select("#vis1")
 .append("svg")
@@ -183,6 +184,7 @@ function node_hover_over(event, d) {
   const node = findInformationWithSong("Food")
   draw(node, svg); //todo: this can be removed when we integrate linking
   addNode(node);
+<<<<<<< HEAD
   
   function buttonClicked() {
     const songTitle = document.getElementById('information').value; // gets the information from the textbox
@@ -203,6 +205,118 @@ function node_hover_over(event, d) {
       //console.log("made it");
       activeNodes.push(node); //adds node to graph
       document.getElementById("songTitle").innerHTML = "Song Added: " + node.title_track;
+=======
+  neighborNodes.push(node);
+  }
+
+  function resetVis() {
+
+    NETWORKFRAME.selectAll('circle').remove();
+    NETWORKFRAME.selectAll('line').remove();
+    NETWORKFRAME.selectAll('text').remove();
+
+      simulation = simulation.nodes(activeNodes)
+      .force('charge', d3.forceManyBody().strength(-250))
+      .force('centerX', d3.forceX(FRAME_WIDTH / 2))
+      .force('centerY', d3.forceY(FRAME_HEIGHT / 2))
+      .on('tick', ticked)
+      .restart();
+
+      simulation.force("link", d3.forceLink(activeLinks).id(d => d.id));
+
+      simulation.force('link', d3.forceLink()
+      .strength(link => link.strength));
+
+      linkElements = NETWORKFRAME
+      .attr('stroke-width', 2)
+      .selectAll('line')
+      .data(activeLinks)
+      .enter()
+      .append('line')
+      .attr('stroke', 'black');
+
+      nodeElements = NETWORKFRAME
+      .selectAll('circle')
+      .data(activeNodes)
+      .enter()
+      .append('circle')
+      .attr('r', 10)
+      .on("mouseenter", node_hover_over)
+      .on("mousemove", node_move)
+      .on("mouseleave", node_hover_out)
+      .on("click", point_clicked)
+      .attr('fill', 'red')
+      .call(d3
+        .drag()
+        .on("start", dragstarted)
+        .on("drag", dragged)
+        .on("end", dragended));
+
+      textElement = NETWORKFRAME
+      .selectAll("text")
+      .data(activeNodes)
+      .enter()
+      .append("text")
+      .attr('pointer-events', 'none')
+      .text(d => d.id);
+
+      console.log(activeLinks);
+    }
+
+    function findInformationWithSong(songTitle) {
+      for (let i = 0; i < realData.nodes.length; i++) {
+    // console.log(nodes[i].title_track)
+    if(realData.nodes[i].title_track == songTitle) {
+      return realData.nodes[i]
+    }
+  }
+  return -1;
+}
+
+function point_clicked(event, d) {
+      // css toggle; when point is clicked, 'yes_border' is activated
+      //d3.select("circle").classed("yes_border", d3.select(this).classed("yes_border") ? false : true); //todo: should class everything in neighborNodes after resetVis
+
+      const id = d.id;
+
+      neighborNodes = [];
+      addNeighbor(d);
+      const tempNodes = realData.nodes;
+      const tempLinks = realData.links;
+      
+      for (let i = 0; i < tempLinks.length; i++) {
+        if(tempLinks[i].source.id == id) {
+          console.log("matched source");
+
+          for (let j = 0; j < tempNodes.length; j++) {
+            if (tempLinks[i].target.id == tempNodes[j].id) {
+              addNeighbor(tempNodes[j]);
+            }
+          }
+        }
+      }
+      console.log(neighborNodes);
+      draw(neighborNodes);
+    }
+
+    function resetLinks(node) {
+      for (let i = 0; i < activeNodes.length; i++) {
+        for (let k = 0; k < realData.links.length; k++) {
+            if (realData.links[k].source.id == activeNodes[i].id && realData.links[k].target.id == node.id) {
+              activeLinks.push(realData.links[k]);
+            } else if (realData.links[k].target.id == activeNodes[i].id && realData.links[k].source.id == node.id) {
+              activeLinks.push(realData.links[k]);
+            }
+          }
+      }
+    }
+
+    // restarts visual when drag actions starts
+    function dragstarted(event, d) {
+    if (!event.active) simulation.alphaTarget(0.3).restart();
+    d.fy = d.y;
+    d.fx = d.x;
+>>>>>>> parent of 7ee5b2f... vCleanedDataSources
     }
     
     resetLinks(node);

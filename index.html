@@ -1,8 +1,8 @@
 <!DOCTYPE html>
-<html> 
+<html>
 
 <head>
-    <meta charset=utf-8/>
+    <meta charset=utf-8 />
     <link rel="stylesheet" type="text/css" href="style.css">
     <script src='js/d3.v6.1.1/d3.min.js'></script>
     
@@ -12,86 +12,175 @@
 
 <body>
     
-    <h1>Visualization of a Music Recommendation Algorithm Using a Network Graph</h1>
     
-   <div>
-        <h2 class="header">Motivation</h2>
-        <div>
-        We are an entire team of music lovers. Beyond music though, we're particularly passionate about understanding and visualizing recommendation algorithms in order to understand how they work. Our motivation for this project brings these two passions together. Our project is involved in the area of recommendation systems and algorithms. We want to allow our users to be able to find song recommendations, as well as understand what makes the songs similar in order to make on the spot judgements to create a creative linking throughout the work. 
-        </div>
-        <br>
-        <div>
-        Our tool has two primary use cases for this domain area and problem: playlist development for hobbyists or producers and live DJing for hobbyist or professional DJs. Producers of playlists or albums need to create a track ordering that tells a story or creates a seamless flow. To do this, they need to understand the similarity between songs and what drives that similarity in order to create an effective ordering. Alternatively, the role of a DJ is to make these judgements on the fly. Without an AI tool or automation, the DJ needs to rely on his own awareness of song options and understanding of their dynamics from memory. With our visualization tool, a DJ would be able to link songs together over time, make snap judgement decisions on which song to choose next, and see what trajectory his performance has taken over time.
-        </div>
+    <div class="intro">
+        <h1>Visualization of a Music Recommendation Algorithm Using a Network Graph</h1>
     </div>
     
-    <div>
-        <h2 class="header">Background</h2>
-        <h3 class="subheader">Data</h3>
-
-        <div>
-        The original dataset was collected from the Free Musical Archive ("FMA"). FMA offers free access to open licensed, original music by independent artists around the world. Our tool visualizes different song tracks and recommended songs based on similarity of different attributes like valence, tempo and danceability. We used Python to clean and prepare our data. In order to find the similarity between songs, we decided to use the Euclidean distance method via Scikit-Learn to obtain an adjacency matrix for all nodes/songs. We then found top 6 matches and converted the data to a json file. 
-        </div>
-        <br>
-        <div>
-        The following are potential issues with our dataset. Data sampling might not be accurate for our population, presenting biases as only independent artists who are willing to upload their music for free. As a result, the bias is that any music that is privatized will not be present. Some data quality issues are that some tracks do not have genres associated with them and there are multiple tracks with the same names. There are also some erroneous lines in the csv file that had to be removed. To correct this, we had to manually delete such rows from the csv files. Moreover, outliers in the data consist of six songs that are shorter than two seconds. 
-        </div>
-        <br>
-        <div>
-        Original Data link: 
-        <a href="https://github.com/mdeff/fma"> https://github.com/mdeff/fma</a>
-        </div>
-    </div>
-    
-    <div>
-        <h2 class="header">Visualization</h2>
-        <div> <strong>NOTE:</strong>The network graph is <em>not</em> our final visualization for pm-03. To see our final visualization (spider chart) that has static and interactive details implemented please enter a song and click submit. Sample song titles are as follows: </div>
-        <ul>
-            <li>Electric Ave</li>
-            <li>Love</li>
-            <li>Food</li>
-            <li>Freeway</li>
-        </ul>
-        <div class="flex-container">
+    <div id="motivation" class="panel">
+        
+        <h2 class="animate-charcter"> Motivation</h2>
+        
+        <h1 class="text">
             
-            <div class = "column" id=column1>
-                <div>
-                    <h2>Enter Song Title!</h2>
-                    
-                    <input id="information" label="id">
-                    <button id="button"> Submit </button>
-                    
-                    <h1 id="songTitle">Song Title: </h1>
-                </div>
-
+            We are an entire team of music lovers. Beyond music though, we're particularly passionate about
+            understanding and
+            visualizing recommendation algorithms in order to understand how they work. Our motivation for this project
+            brings these
+            two passions together. Our project is involved in the area of recommendation systems and algorithms. We want
+            to allow
+            our users to be able to find song recommendations, as well as understand what makes the songs similar in
+            order to make
+            on the spot judgements to create a creative linking throughout the work.
+            Our
+            
+            <br>
+            <br>
+            <br>
+            <br>
+            
+            Our tool has two primary use cases for this domain area and problem: playlist development for hobbyists or
+            producers and
+            live DJing for hobbyist or professional DJs. Producers of playlists or albums need to create a track
+            ordering that tells
+            a story or creates a seamless flow. To do this, they need to understand the similarity between songs and
+            what drives
+            that similarity in order to create an effective ordering. Alternatively, the role of a DJ is to make these
+            judgements on
+            the fly. Without an AI tool or automation, the DJ needs to rely on his own awareness of song options and
+            understanding
+            of their dynamics from memory. With our visualization tool, a DJ would be able to link songs together over
+            time, make
+            snap judgement decisions on which song to choose next, and see what trajectory his performance has taken
+            over time.
+            
+        </h1>
+        
+    </div>
+    
+    <div id="background" class="panel">
+        <h2 class="animate-charcter"> Background</h2>
+        
+        <h1 class="text">
+            The original dataset was collected from the Free Musical Archive ("FMA"). FMA offers free access to open
+            licensed,
+            original music by independent artists around the world. Our tool visualizes different song tracks and
+            recommended
+            songs based on similarity of different attributes like valence, tempo and danceability. We used Python to
+            clean and
+            prepare our data. In order to find the similarity between songs, we decided to use the Euclidean distance
+            method via
+            Scikit-Learn to obtain an adjacency matrix for all nodes/songs. We then found top 6 matches and converted
+            the data
+            to a json file.
+            
+            <br>
+            <br>
+            <br>
+            <br>
+            
+            The following are potential issues with our dataset. Data sampling might not be accurate for our population,
+            presenting biases as only independent artists who are willing to upload their music for free. As a result,
+            the bias
+            is that any music that is privatized will not be present. Some data quality issues are that some tracks do
+            not have
+            genres associated with them and there are multiple tracks with the same names. There are also some erroneous
+            lines
+            in the csv file that had to be removed. To correct this, we had to manually delete such rows from the csv
+            files.
+            Moreover, outliers in the data consist of six songs that are shorter than two seconds.
+            
+            <br>
+            <br>
+            Original Data link:
+            <a href="https://github.com/mdeff/fma"> https://github.com/mdeff/fma</a>
+        </h1>
+    </div>
+    
+    <div id="visualization" class="panel">
+        <h2 class="animate-charcter"> Visualization</h2>
+        
+        <h1 class="text">
+            NOTE: The network graph is <em>not</em> our final visualization for pm-03. To see our
+            final
+            visualization (spider chart) that has static and interactive details implemented please enter a song and
+            click
+            submit. Sample song titles are as follows:
+            
+            <ul>
+                <li>Electric Ave</li>
+                <li>Love</li>
+                <li>Food</li>
+                <li>Freeway</li>
+            </ul>
+        </h1>
+        
+        <div class="navbar">
+            <h3 class="text">Enter Song Title!</h3>
+            
+            <div class="enterSong">
+                <input id="information" label="id">
+                <button id="button"> Submit </button>
+            </div>
+            
+            <h3 class="text" id="songTitle">Song Title: Food</h3>
+        </div>
+        
+        <div class="column">
+            
+            <div id="column1">
                 <div id="vis1"></div>
             </div>
             
             <div id="column2">
                 <div id="vis2"></div>
-            </div>      
+            </div>
+            
         </div>
     </div>
     
-    <div>
-        <h2 class="header">Acknowledgements</h2>
-
-        <div id="resources">
+    <div id="resources" class="panel">
+        <h2 class="animate-charcter">Resources</h2>
+        
+        <h1 class="text">
             <ul>
-                <li> <a href=" https://d3-graph-gallery.com/graph/scatter_basic.html"> https://d3-graph-gallery.com/graph/scatter_basic.html</a></li>
-                <li> <a href="https://d3-graph-gallery.com/graph/barplot_basic.html">https://d3-graph-gallery.com/graph/barplot_basic.html</a></li>
-                <li> <a href="https://observablehq.com/@philippkoytek/d3-part-3-brushing-and-linking">https://observablehq.com/@philippkoytek/d3-part-3-brushing-and-linking</a></li>
-                <li> <a href="https://d3-graph-gallery.com/spider">https://d3-graph-gallery.com/spider</a></li>
-                <li> <a href="https://observablehq.com/@mbostock/d3-force-directed-graph">https://observablehq.com/@mbostock/d3-force-directed-graph</a></li>
-                <li> <a href="https://medium.com/ninjaconcept/interactive-dynamic-force-directed-graphs-with-d3-da720c6d7811">https://medium.com/ninjaconcept/interactive-dynamic-force-directed-graphs-with-d3-da720c6d7811</a></li>
-                <li> <a href="https://www.d3indepth.com/force-layout/">https://www.d3indepth.com/force-layout/</a></li>
-                <li> <a href="https://observablehq.com/@brunolaranjeira/d3-v6-force-directed-graph-with-directional-straight-arrow">https://observablehq.com/@brunolaranjeira/d3-v6-force-directed-graph-with-directional-straight-arrow</a></li>
-                
-            </ul>
-        </div> 
-    </div>
-    
-    <script type="module" src="js/main.js"></script>
+                <li> <a
+                    href=" https://d3-graph-gallery.com/graph/scatter_basic.html">https://d3-graph-gallery.com/graph/scatter_basic.html</a>
+                </li>
+                <li> <a
+                    href="https://d3-graph-gallery.com/graph/barplot_basic.html">https://d3-graph-gallery.com/graph/barplot_basic.html</a>
+                </li>
+                <li><a
+                    href="https://observablehq.com/@philippkoytek/d3-part-3-brushing-and-linking">https://observablehq.com/@philippkoytek/d3-part-3-brushing-and-linking</a>
+                </li>
+                <li><a href="https://d3-graph-gallery.com/spider">https://d3-graph-gallery.com/spider</a></li>
+            </li>
+            <li><a
+                href="https://observablehq.com/@mbostock/d3-force-directed-graph">https://observablehq.com/@mbostock/d3-force-directed-graph</a>
+            </li>
+            <li><a
+                href="https://medium.com/ninjaconcept/interactive-dynamic-force-directed-graphs-with-d3-da720c6d7811">https://medium.com/ninjaconcept/interactive-dynamic-force-directed-graphs-with-d3-da720c6d7811</a>
+            </li>
+            <li><a href="https://www.d3indepth.com/force-layout">https://www.d3indepth.com/force-layout/</a></li>
+            <li> <a
+                href="https://observablehq.com/@brunolaranjeira/d3-v6-force-directed-graph-with-directional-straight-arrow">https://observablehq.com/@brunolaranjeira/d3-v6-force-directed-graph-with-directional-straight-arrow</a>
+            </li>
+            <li><a
+                href="https://freefrontend.com/css-scroll-effects/">https://freefrontend.com/css-scroll-effects/</a>
+            </li>
+            <li><a href="https://codepen.io/argyleink/pen/wvMxEXM">https://codepen.io/argyleink/pen/wvMxEXM</a></li>
+            <li><a
+                href="https://alvarotrigo.com/blog/css-text-animations/">https://alvarotrigo.com/blog/css-text-animations/</a>
+            </li>
+            <li><a
+                href="https://developer.mozilla.org/en-US/docs/Web/CSS/max-block-size">https://developer.mozilla.org/en-US/docs/Web/CSS/max-block-size</a>
+            </li>
+        </ul>
+    </h1>
+</div>
+
+
+<script type="module" src="js/main.js"></script>
 </body>
 
 </html>

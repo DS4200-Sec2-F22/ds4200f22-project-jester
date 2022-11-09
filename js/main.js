@@ -57,7 +57,7 @@ console.log(activeLinks);
 console.log(links);
 console.log(data.links);
 
-let NETWORKFRAME = d3.select("#vis1")
+export let NETWORKFRAME = d3.select("#vis1")
 .append("svg")
 .attr("height", FRAME_HEIGHT)
 .attr("width", FRAME_WIDTH)
@@ -202,7 +202,7 @@ let nodeElements = NETWORKFRAME
     
   }
   
-  const svg = d3.select("#vis2")
+  export const svg = d3.select("#vis2")
   .append("svg")
   .attr("width", 650)
   .attr("height", 650);

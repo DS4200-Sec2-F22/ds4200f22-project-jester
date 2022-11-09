@@ -161,7 +161,7 @@ let nodeElements = NETWORKFRAME
   document.getElementById("button").addEventListener("click", buttonClicked);
   
   function node_hover_over(event, d) {
-
+    
     d3.select(event.currentTarget)
     .style("fill", hoverNodeColor)
     .style('stroke',hoverNodeColor)
@@ -198,14 +198,14 @@ let nodeElements = NETWORKFRAME
     linkElements
     .attr("display", "block")
     .attr("stroke", defaultLinkColor)
-
+    
     
   }
   
   const svg = d3.select("#vis2")
   .append("svg")
   .attr("width", 650)
-  .attr("height", 650);
+  .attr("height", 800);
   
   
   function buttonClicked() {
@@ -371,7 +371,7 @@ let nodeElements = NETWORKFRAME
     
     // -----------------PLOT 2----------------
     
-
+    
     let colors = d3
     .scaleOrdinal(
       ["#ffd700",
@@ -448,111 +448,128 @@ let nodeElements = NETWORKFRAME
           .attr("r", radialScale(t))
           );
           
-        ticks.forEach(t =>
-          svg.append("text")
-          .attr("x", 305)
-          .attr("y", 300 - radialScale(t))
-          .text((t / 10).toString())
-          );
+          ticks.forEach(t =>
+            svg.append("text")
+            .attr("x", 305)
+            .attr("y", 300 - radialScale(t))
+            .text((t / 10).toString())
+            );
             
             
-        function angleToCoordinate(angle, value) {
-          let x = Math.cos(angle) * radialScale(value);
-          let y = Math.sin(angle) * radialScale(value);
-          return { "x": 300 + x, "y": 300 - y };
-        }
-        
-        for (let i = 0; i < features.length; i++) {
-          let ft_name = features[i];
-          let angle = (Math.PI / 2) + (2 * Math.PI * i / features.length);
-          let line_coordinate = angleToCoordinate(angle, 10);
-          let label_coordinate = angleToCoordinate(angle, 10.5);
-              
-          //draw axis line
-          svg.append("line")
-          .attr("x1", 300)
-          .attr("y1", 300)
-          .attr("x2", line_coordinate.x)
-          .attr("y2", line_coordinate.y)
-          .attr("stroke", "white")
-          .attr("stroke-width", 1,2);
-          
-          
-          //draw axis label
-          svg.append("text")
-          .attr("x", label_coordinate.x)
-          .attr("y", label_coordinate.y)
-          .attr("stroke", "white")
-          .attr("stroke-width", 1.3)
-          .text(ft_name);
-        }
-        
-          let line = d3.line()
-          .x(d => d.x)
-          .y(d => d.y);
-        
+            function angleToCoordinate(angle, value) {
+              let x = Math.cos(angle) * radialScale(value);
+              let y = Math.sin(angle) * radialScale(value);
+              return { "x": 300 + x, "y": 300 - y };
+            }
             
-            
-          function getPathCoordinates(data_point) {
-            let coordinates = [];
             for (let i = 0; i < features.length; i++) {
               let ft_name = features[i];
               let angle = (Math.PI / 2) + (2 * Math.PI * i / features.length);
-              coordinates.push(angleToCoordinate(angle, data_point[ft_name]));
+              let line_coordinate = angleToCoordinate(angle, 10);
+              let label_coordinate = angleToCoordinate(angle, 10.5);
+              
+              //draw axis line
+              svg.append("line")
+              .attr("x1", 300)
+              .attr("y1", 300)
+              .attr("x2", line_coordinate.x)
+              .attr("y2", line_coordinate.y)
+              .attr("stroke", "white")
+              .attr("stroke-width", 1,2);
+              
+              
+              //draw axis label
+              svg.append("text")
+              .attr("x", label_coordinate.x)
+              .attr("y", label_coordinate.y)
+              .attr("stroke", "white")
+              .attr("stroke-width", 1.3)
+              .text(ft_name);
             }
-            return coordinates;
-          }
-          
-          for (let i = 0; i < data.length; i++) {
-            let d = data[i];
-            let color = colors(i);
-            let coordinates = getPathCoordinates(d);
             
-            //draw the path element
-            svg.append("path")
-            .datum(coordinates)
-            .attr("d", line)
-            .attr("stroke-width", 1)
-            .attr("stroke", color)
-            .attr("fill", color)
-            .attr("stroke-opacity", 1)
-            .attr("opacity", original_opacity)
-            .on("mouseover", spider_mouseover)
-            .on("mouseleave", spider_mouseleave);
+            let line = d3.line()
+            .x(d => d.x)
+            .y(d => d.y);
             
             
-          }
             
-          // get name of each neighbor node
-          function getSongNamesFromNeighbor(arr) {
-            let listOfNames = []
-            for(let i=0; i<arr.length; i++){
-              listOfNames.push(arr[i].title_track)
+            function getPathCoordinates(data_point) {
+              let coordinates = [];
+              for (let i = 0; i < features.length; i++) {
+                let ft_name = features[i];
+                let angle = (Math.PI / 2) + (2 * Math.PI * i / features.length);
+                coordinates.push(angleToCoordinate(angle, data_point[ft_name]));
+              }
+              return coordinates;
             }
-            return listOfNames;
+            
+            for (let i = 0; i < data.length; i++) {
+              let d = data[i];
+              let color = colors(i);
+              let coordinates = getPathCoordinates(d);
+              
+              //draw the path element
+              svg.append("path")
+              .datum(coordinates)
+              .attr("d", line)
+              .attr("stroke-width", 1)
+              .attr("stroke", color)
+              .attr("fill", color)
+              .attr("stroke-opacity", 1)
+              .attr("opacity", original_opacity)
+              .on("mouseover", spider_mouseover)
+              .on("mouseleave", spider_mouseleave);
+              
+              
+            }
+            
+            // get name of each neighbor node
+            function getSongNamesFromNeighbor(arr) {
+              let listOfNames = []
+              for(let i=0; i<arr.length; i++){
+                listOfNames.push(arr[i].title_track)
+              }
+              return listOfNames;
+            }
+            
+            
+            // Add one dot in the legend for each name.
+            svg.selectAll("mydots")
+            .data(getSongNamesFromNeighbor(neighborNodes))
+            .enter()
+            .append("circle")
+            .attr("cx", MARGINS.left)
+            .attr("cy", function(d,i){ return FRAME_HEIGHT - 125 + i*25}) // 100 is where the first dot appears. 25 is the distance between dots
+            .attr("r", 7)
+            .style("fill", function(d, i){ return colors(i);})
+            
+            // Add one dot in the legend for each name.
+            svg.selectAll("mylabels")
+            .data(getSongNamesFromNeighbor(neighborNodes))
+            .enter()
+            .append("text")
+            .attr("x", MARGINS.left +20)
+            .attr("y", function(d,i){ return FRAME_HEIGHT - 125 + i*25}) // 100 is where the first dot appears. 25 is the distance between dots
+            .style("fill", function(d, i){ return colors(i);})
+            .text(function(d){ return d})
+            .attr("text-anchor", "left")
+            .style("alignment-baseline", "middle")
           }
           
           
-          // Add one dot in the legend for each name.
-          svg.selectAll("mydots")
-          .data(getSongNamesFromNeighbor(neighborNodes))
-          .enter()
-          .append("circle")
-          .attr("cx", MARGINS.left)
-          .attr("cy", function(d,i){ return FRAME_HEIGHT-190 + i*25}) // 100 is where the first dot appears. 25 is the distance between dots
-          .attr("r", 7)
-          .style("fill", function(d, i){ return colors(i);})
           
-          // Add one dot in the legend for each name.
-          svg.selectAll("mylabels")
-          .data(getSongNamesFromNeighbor(neighborNodes))
-          .enter()
-          .append("text")
-          .attr("x", MARGINS.left +20)
-          .attr("y", function(d,i){ return FRAME_HEIGHT-190 + i*25}) // 100 is where the first dot appears. 25 is the distance between dots
-          .style("fill", function(d, i){ return colors(i);})
-          .text(function(d){ return d})
-          .attr("text-anchor", "left")
-          .style("alignment-baseline", "middle")
-        }
+          function resetButtonClicked() {
+            
+            activeLinks = [];
+            activeNodes = [];
+            neighborNodes = [];
+            
+            svg.selectAll("*").remove();
+            NETWORKFRAME.selectAll("*").remove();
+            
+            document.getElementById("songTitle").innerHTML = "Song Added: ";
+            
+          }
+          
+          document.getElementById("reset").addEventListener("click", resetButtonClicked);
           

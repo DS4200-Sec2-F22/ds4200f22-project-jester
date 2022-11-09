@@ -191,6 +191,12 @@ let nodeElements = NETWORKFRAME
     
   }
   
+  const svg = d3.select("#vis2")
+  .append("svg")
+  .attr("width", 650)
+  .attr("height", 650);
+  
+  
   function buttonClicked() {
     const songTitle = document.getElementById('information').value; // gets the information from the textbox
     document.getElementById('information').value = ""; // sets textbox to "" 
@@ -364,10 +370,6 @@ let nodeElements = NETWORKFRAME
       "#9d02d7",
       "#0000ff"]);
       
-      const svg = d3.select("#vis2")
-      .append("svg")
-      .attr("width", 650)
-      .attr("height", 650);
       
       function spider_mouseover(event, d) {
         d3.select(event.currentTarget).style("opacity", hover_opacity);
@@ -541,11 +543,4 @@ let nodeElements = NETWORKFRAME
             .attr("text-anchor", "left")
             .style("alignment-baseline", "middle")
           }
-          
-          
-          
-          
-          // Food 
-          // Electric Ave 
-          // This World
           

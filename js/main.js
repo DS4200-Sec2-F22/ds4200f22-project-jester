@@ -14,6 +14,7 @@ Possible Additions:
 1. Toggle for each neighborNodes song to indicate whether it should be shown on spider chart or not
 2. Update node titles to song names and fix tooltip
 3. Drop down for number of nearest neighbors.
+4. Can we just have one setup function for both intialization and update for node graph like spider? Do we even need setup if we're starting with it empty? We could just call "addNode" and "click" to start?
 
 */
 
@@ -31,6 +32,12 @@ const FRAME_WIDTH = 700;
 const MARGINS = { left: 50, right: 50, top: 50, bottom: 50 };
 const SCALE = 50;
 const PADDING = 20;
+
+const features = ["Acousticness", "Danceability", "Energy", "Instrumentalness", "Liveness", "Speechiness", "Valence"];
+let ticks = [2, 4, 6, 8, 10];
+let radialScale = d3.scaleLinear()
+          .domain([0, 10])
+          .range([0, 250]);
 
 const VIS_HEIGHT = FRAME_HEIGHT - MARGINS.left - MARGINS.right;
 const VIS_WIDTH = FRAME_WIDTH - MARGINS.top - MARGINS.bottom; 
@@ -76,7 +83,7 @@ simulation = d3.forceSimulation(activeNodes)
 .on('tick', ticked);
 
 simulation.force('link', d3.forceLink()
-.strength(link => link.strength));
+  .strength(link => link.strength));
 
 let linkElements = NETWORKFRAME
 .append('g')
@@ -161,7 +168,7 @@ let nodeElements = NETWORKFRAME
   document.getElementById("button").addEventListener("click", buttonClicked);
   
   function node_hover_over(event, d) {
-    
+
     d3.select(event.currentTarget)
     .style("fill", hoverNodeColor)
     .style('stroke',hoverNodeColor)
@@ -199,13 +206,14 @@ let nodeElements = NETWORKFRAME
     .attr("display", "block")
     .attr("stroke", defaultLinkColor)
     
-    
   }
   
   const svg = d3.select("#vis2")
   .append("svg")
   .attr("width", 650)
   .attr("height", 800);
+
+  setupSpider();
   
   
   function buttonClicked() {
@@ -238,9 +246,9 @@ let nodeElements = NETWORKFRAME
     addNode(node);
     neighborNodes.push(node);
   }
-  
+
   function resetVis() {
-    
+
     NETWORKFRAME.selectAll('circle').remove();
     NETWORKFRAME.selectAll('line').remove();
     NETWORKFRAME.selectAll('text').remove();
@@ -255,7 +263,7 @@ let nodeElements = NETWORKFRAME
     simulation.force("link", d3.forceLink(activeLinks).id(d => d.id));
     
     simulation.force('link', d3.forceLink()
-    .strength(link => link.strength));
+      .strength(link => link.strength));
     
     linkElements = NETWORKFRAME
     .attr('stroke-width', 1)
@@ -284,25 +292,25 @@ let nodeElements = NETWORKFRAME
       .on("start", dragstarted)
       .on("drag", dragged)
       .on("end", dragended));
-      
-      textElement = NETWORKFRAME
-      .selectAll("text")
-      .data(activeNodes)
-      .enter()
-      .append("text")
-      .style("font", font)
-      .attr('font-weight', 100)
-      .attr('pointer-events', 'none')
-      .attr("stroke", text_color)
-      .attr("stroke-width", 1.2)
-      
-      .text(d => d.title_track);
-      
-      console.log(activeLinks);
-    }
-    
-    function findInformationWithSong(songTitle) {
-      for (let i = 0; i < nodes.length; i++) {
+
+    textElement = NETWORKFRAME
+    .selectAll("text")
+    .data(activeNodes)
+    .enter()
+    .append("text")
+    .style("font", font)
+    .attr('font-weight', 100)
+    .attr('pointer-events', 'none')
+    .attr("stroke", text_color)
+    .attr("stroke-width", 1.2)
+
+    .text(d => d.title_track);
+
+    console.log(activeLinks);
+  }
+
+  function findInformationWithSong(songTitle) {
+    for (let i = 0; i < nodes.length; i++) {
         // console.log(nodes[i].title_track)
         if(nodes[i].title_track == songTitle) {
           return nodes[i]
@@ -381,21 +389,19 @@ let nodeElements = NETWORKFRAME
       "#cd34b5",
       "#9d02d7",
       "#0000ff"]);
-      
-      
-      function spider_mouseover(event, d) {
-        d3.select(event.currentTarget).style("opacity", hover_opacity);
-      }
-      
-      function spider_mouseleave(event, d) {
-        d3.select(event.currentTarget).style("opacity", original_opacity);
-      }
-      
-      
-      
+
+
+    function spider_mouseover(event, d) {
+      d3.select(event.currentTarget).style("opacity", hover_opacity);
+    }
+
+    function spider_mouseleave(event, d) {
+      d3.select(event.currentTarget).style("opacity", original_opacity);
+    }
+
+
       function draw(neighborNodes) {//todo: draw should be modified to not take in an id and just draw all nodes in neighborNodes[]
         svg.selectAll("*").remove();
-        let features = ["Acousticness", "Danceability", "Energy", "Instrumentalness", "Liveness", "Speechiness", "Valence"];
         let data = [];
         console.log('ACOUSTICNESS' + neighborNodes[0].acousticness)
         
@@ -431,83 +437,29 @@ let nodeElements = NETWORKFRAME
         console.log("INSIDE DRAW" +data);
         
         
-        let radialScale = d3.scaleLinear()
-        .domain([0, 10])
-        .range([0, 250]);
-        let ticks = [2, 4, 6, 8, 10];
-        
-        
-        
-        ticks.forEach(t =>
-          svg.append("circle")
-          .attr("cx", 300)
-          .attr("cy", 300)
-          .attr("fill", "none")
-          .attr("stroke", "white")
-          .attr("stroke-width", 1.2)
-          .attr("r", radialScale(t))
-          );
-          
-          ticks.forEach(t =>
-            svg.append("text")
-            .attr("x", 305)
-            .attr("y", 300 - radialScale(t))
-            .text((t / 10).toString())
-            );
-            
-            
-            function angleToCoordinate(angle, value) {
-              let x = Math.cos(angle) * radialScale(value);
-              let y = Math.sin(angle) * radialScale(value);
-              return { "x": 300 + x, "y": 300 - y };
-            }
-            
-            for (let i = 0; i < features.length; i++) {
-              let ft_name = features[i];
-              let angle = (Math.PI / 2) + (2 * Math.PI * i / features.length);
-              let line_coordinate = angleToCoordinate(angle, 10);
-              let label_coordinate = angleToCoordinate(angle, 10.5);
-              
-              //draw axis line
-              svg.append("line")
-              .attr("x1", 300)
-              .attr("y1", 300)
-              .attr("x2", line_coordinate.x)
-              .attr("y2", line_coordinate.y)
-              .attr("stroke", "white")
-              .attr("stroke-width", 1,2);
-              
-              
-              //draw axis label
-              svg.append("text")
-              .attr("x", label_coordinate.x)
-              .attr("y", label_coordinate.y)
-              .attr("stroke", "white")
-              .attr("stroke-width", 1.3)
-              .text(ft_name);
-            }
-            
-            let line = d3.line()
-            .x(d => d.x)
-            .y(d => d.y);
-            
-            
-            
-            function getPathCoordinates(data_point) {
-              let coordinates = [];
-              for (let i = 0; i < features.length; i++) {
-                let ft_name = features[i];
-                let angle = (Math.PI / 2) + (2 * Math.PI * i / features.length);
-                coordinates.push(angleToCoordinate(angle, data_point[ft_name]));
-              }
-              return coordinates;
-            }
-            
-            for (let i = 0; i < data.length; i++) {
-              let d = data[i];
-              let color = colors(i);
-              let coordinates = getPathCoordinates(d);
-              
+        setupSpider();
+
+        let line = d3.line()
+        .x(d => d.x)
+        .y(d => d.y);
+
+
+
+        function getPathCoordinates(data_point) {
+          let coordinates = [];
+          for (let i = 0; i < features.length; i++) {
+            let ft_name = features[i];
+            let angle = (Math.PI / 2) + (2 * Math.PI * i / features.length);
+            coordinates.push(angleToCoordinate(angle, data_point[ft_name]));
+          }
+          return coordinates;
+        }
+
+        for (let i = 0; i < data.length; i++) {
+          let d = data[i];
+          let color = colors(i);
+          let coordinates = getPathCoordinates(d);
+
               //draw the path element
               svg.append("path")
               .datum(coordinates)
@@ -559,7 +511,7 @@ let nodeElements = NETWORKFRAME
           
           
           function resetButtonClicked() {
-            
+
             activeLinks = [];
             activeNodes = [];
             neighborNodes = [];
@@ -572,4 +524,56 @@ let nodeElements = NETWORKFRAME
           }
           
           document.getElementById("reset").addEventListener("click", resetButtonClicked);
+
+          function angleToCoordinate(angle, value) {
+            let x = Math.cos(angle) * radialScale(value);
+            let y = Math.sin(angle) * radialScale(value);
+            return { "x": 300 + x, "y": 300 - y };
+          }
+
+          function setupSpider() {
+
+            ticks.forEach(t =>
+              svg.append("circle")
+              .attr("cx", 300)
+              .attr("cy", 300)
+              .attr("fill", "none")
+              .attr("stroke", "white")
+              .attr("stroke-width", 1.2)
+              .attr("r", radialScale(t))
+              );
+
+            ticks.forEach(t =>
+              svg.append("text")
+              .attr("x", 305)
+              .attr("y", 300 - radialScale(t))
+              .text((t / 10).toString())
+              );
+            
+            
+            for (let i = 0; i < features.length; i++) {
+              let ft_name = features[i];
+              let angle = (Math.PI / 2) + (2 * Math.PI * i / features.length);
+              let line_coordinate = angleToCoordinate(angle, 10);
+              let label_coordinate = angleToCoordinate(angle, 10.5);
+              
+              //draw axis line
+              svg.append("line")
+              .attr("x1", 300)
+              .attr("y1", 300)
+              .attr("x2", line_coordinate.x)
+              .attr("y2", line_coordinate.y)
+              .attr("stroke", "white")
+              .attr("stroke-width", 1,2);
+              
+              
+              //draw axis label
+              svg.append("text")
+              .attr("x", label_coordinate.x)
+              .attr("y", label_coordinate.y)
+              .attr("stroke", "white")
+              .attr("stroke-width", 1.3)
+              .text(ft_name);
+            }
+          }
           

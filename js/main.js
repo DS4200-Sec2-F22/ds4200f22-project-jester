@@ -39,9 +39,9 @@ const VIS_WIDTH = FRAME_WIDTH - MARGINS.top - MARGINS.bottom;
 
 // -----------------PLOT 1-----------------
 
-export let activeNodes = []; 
-export let neighborNodes = [];
-export let activeLinks = [];
+let activeNodes = []; 
+let neighborNodes = [];
+let activeLinks = [];
 
 let hoverNodeColor = '#FF8D32'
 let defaultNodeColor = '#A400EC' 
@@ -57,7 +57,7 @@ console.log(activeLinks);
 console.log(links);
 console.log(data.links);
 
-export let NETWORKFRAME = d3.select("#vis1")
+let NETWORKFRAME = d3.select("#vis1")
 .append("svg")
 .attr("height", FRAME_HEIGHT)
 .attr("width", FRAME_WIDTH)
@@ -202,7 +202,7 @@ let nodeElements = NETWORKFRAME
     
   }
   
-  export const svg = d3.select("#vis2")
+  const svg = d3.select("#vis2")
   .append("svg")
   .attr("width", 650)
   .attr("height", 800);
@@ -239,7 +239,7 @@ let nodeElements = NETWORKFRAME
     neighborNodes.push(node);
   }
   
-  export function resetVis() {
+  function resetVis() {
     
     NETWORKFRAME.selectAll('circle').remove();
     NETWORKFRAME.selectAll('line').remove();
@@ -337,7 +337,7 @@ let nodeElements = NETWORKFRAME
       draw(neighborNodes);
     }
     
-    export function resetLinks(node) {
+    function resetLinks(node) {
       for (let i = 0; i < activeNodes.length; i++) {
         for (let k = 0; k < links.length; k++) {
           if (links[k].source.id == activeNodes[i].id && links[k].target.id == node.id) {

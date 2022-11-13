@@ -25,7 +25,7 @@ import data from "../data/data.json" assert { type: "json" };
 const nodes = data.nodes; 
 const links = data.links;
 
-console.log(links);
+// console.log(links);
 
 const FRAME_HEIGHT = 700;
 const FRAME_WIDTH = 700;
@@ -39,8 +39,8 @@ let radialScale = d3.scaleLinear()
           .domain([0, 10])
           .range([0, 250]);
 
-const VIS_HEIGHT = FRAME_HEIGHT - MARGINS.left - MARGINS.right;
-const VIS_WIDTH = FRAME_WIDTH - MARGINS.top - MARGINS.bottom; 
+
+
 
 // ----------SETTING THE FRAME FOR BOTH VISUALIZATIONS----------------
 
@@ -61,8 +61,8 @@ let font = '14px Arial';
 let text_color = 'white';
 
 console.log(activeLinks);
-console.log(links);
-console.log(data.links);
+// console.log(links);
+// console.log(data.links);
 
 let NETWORKFRAME = d3.select("#vis1")
 .append("svg")
@@ -208,7 +208,7 @@ let nodeElements = NETWORKFRAME
     
   }
   
-  const svg = d3.select("#vis2")
+  const SPIDER_GRAPH = d3.select("#vis2")
   .append("svg")
   .attr("width", 650)
   .attr("height", 800);
@@ -230,7 +230,7 @@ let nodeElements = NETWORKFRAME
   }
   
   function addNode(node) {
-    console.log(node);
+    // console.log(node);
     if (!activeNodes.reduce((prev, curr) => (curr.id == node.id) || (prev), false)) {
       //console.log("made it");
       activeNodes.push(node); //adds node to graph
@@ -332,7 +332,7 @@ let nodeElements = NETWORKFRAME
       
       for (let i = 0; i < tempLinks.length; i++) {
         if(tempLinks[i].source.id == id) {
-          console.log("matched source");
+          // console.log("matched source");
           
           for (let j = 0; j < tempNodes.length; j++) {
             if (tempLinks[i].target.id == tempNodes[j].id) {
@@ -341,7 +341,7 @@ let nodeElements = NETWORKFRAME
           }
         }
       }
-      console.log(neighborNodes);
+      // console.log(neighborNodes);
       draw(neighborNodes);
     }
     
@@ -401,9 +401,9 @@ let nodeElements = NETWORKFRAME
 
 
       function draw(neighborNodes) {//todo: draw should be modified to not take in an id and just draw all nodes in neighborNodes[]
-        svg.selectAll("*").remove();
+        SPIDER_GRAPH.selectAll("*").remove();
         let data = [];
-        console.log('ACOUSTICNESS' + neighborNodes[0].acousticness)
+        // console.log('ACOUSTICNESS' + neighborNodes[0].acousticness)
         
         
         for(let i=0;i<neighborNodes.length;i++) {
@@ -422,7 +422,7 @@ let nodeElements = NETWORKFRAME
           
           let information = [acoustincness, danceability, energy, instrumentalness, liveness, speechiness, valence];
           
-          console.log('INFORMTION' +information)
+          // console.log('INFORMTION' +information)
           
           point["Acousticness"] = information[0] * 10;
           point["Danceability"] = information[1] * 10;
@@ -434,7 +434,8 @@ let nodeElements = NETWORKFRAME
           
           data.push(point);
         }
-        console.log("INSIDE DRAW" +data);
+        
+        // console.log("INSIDE DRAW" + data.toString());
         
         
         setupSpider();
@@ -461,7 +462,7 @@ let nodeElements = NETWORKFRAME
           let coordinates = getPathCoordinates(d);
 
               //draw the path element
-              svg.append("path")
+          SPIDER_GRAPH.append("path")
               .datum(coordinates)
               .attr("d", line)
               .attr("stroke-width", 1)
@@ -486,7 +487,7 @@ let nodeElements = NETWORKFRAME
             
             
             // Add one dot in the legend for each name.
-            svg.selectAll("mydots")
+        SPIDER_GRAPH.selectAll("mydots")
             .data(getSongNamesFromNeighbor(neighborNodes))
             .enter()
             .append("circle")
@@ -496,12 +497,12 @@ let nodeElements = NETWORKFRAME
             .style("fill", function(d, i){ return colors(i);})
             
             // Add one dot in the legend for each name.
-            svg.selectAll("mylabels")
+        SPIDER_GRAPH.selectAll("mylabels")
             .data(getSongNamesFromNeighbor(neighborNodes))
             .enter()
             .append("text")
             .attr("x", MARGINS.left +20)
-            .attr("y", function(d,i){ return FRAME_HEIGHT - 125 + i*25}) // 100 is where the first dot appears. 25 is the distance between dots
+            .attr("y", function(d,i){ return FRAME_HEIGHT - 125 + i * 25}) // 100 is where the first dot appears. 25 is the distance between dots
             .style("fill", function(d, i){ return colors(i);})
             .text(function(d){ return d})
             .attr("text-anchor", "left")
@@ -511,14 +512,15 @@ let nodeElements = NETWORKFRAME
           
           
           function resetButtonClicked() {
-
+           
             activeLinks = [];
             activeNodes = [];
             neighborNodes = [];
-            
-            svg.selectAll("*").remove();
+
+            SPIDER_GRAPH.selectAll("*").remove();
+
             NETWORKFRAME.selectAll("*").remove();
-            
+
             document.getElementById("songTitle").innerHTML = "Song Added: ";
             
           }
@@ -534,7 +536,7 @@ let nodeElements = NETWORKFRAME
           function setupSpider() {
 
             ticks.forEach(t =>
-              svg.append("circle")
+              SPIDER_GRAPH.append("circle")
               .attr("cx", 300)
               .attr("cy", 300)
               .attr("fill", "none")
@@ -544,7 +546,7 @@ let nodeElements = NETWORKFRAME
               );
 
             ticks.forEach(t =>
-              svg.append("text")
+              SPIDER_GRAPH.append("text")
               .attr("x", 305)
               .attr("y", 300 - radialScale(t))
               .text((t / 10).toString())
@@ -558,7 +560,7 @@ let nodeElements = NETWORKFRAME
               let label_coordinate = angleToCoordinate(angle, 10.5);
               
               //draw axis line
-              svg.append("line")
+              SPIDER_GRAPH.append("line")
               .attr("x1", 300)
               .attr("y1", 300)
               .attr("x2", line_coordinate.x)
@@ -568,7 +570,7 @@ let nodeElements = NETWORKFRAME
               
               
               //draw axis label
-              svg.append("text")
+              SPIDER_GRAPH.append("text")
               .attr("x", label_coordinate.x)
               .attr("y", label_coordinate.y)
               .attr("stroke", "white")

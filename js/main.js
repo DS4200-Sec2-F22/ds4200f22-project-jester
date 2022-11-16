@@ -76,9 +76,7 @@ let simulation = d3.forceSimulation(nodes)
 
 simulation = d3.forceSimulation(activeNodes)
 .nodes(activeNodes)
-//.force('radial', d3.forceRadial(200, FRAME_WIDTH, FRAME_HEIGHT))
 .force('charge', d3.forceManyBody().strength(-200))
-.force('center', d3.forceCenter(FRAME_WIDTH/3, FRAME_HEIGHT/3))
 .force('link', d3.forceLink(activeLinks).id(d => d.id).distance(5))
 .on('tick', ticked);
 
@@ -255,8 +253,9 @@ let nodeElements = NETWORKFRAME
     
     simulation = simulation.nodes(activeNodes)
     .force('charge', d3.forceManyBody().strength(-250))
-    .force('centerX', d3.forceX(FRAME_WIDTH / 2))
-    .force('centerY', d3.forceY(FRAME_HEIGHT / 2))
+    .force('centerX', d3.forceX())
+    .force('centerY', d3.forceY())
+    .force('center', d3.forceCenter(FRAME_WIDTH/2, FRAME_HEIGHT/2))
     .on('tick', ticked)
     .restart();
     

@@ -303,8 +303,10 @@ let nodeElements = NETWORKFRAME
     .attr('pointer-events', 'none')
     .attr("stroke", text_color)
     .attr("stroke-width", 1.2)
-
     .text(d => d.title_track);
+            
+    // hides the tooltip
+    tooltip.style("opacity", 0);
 
     console.log(activeLinks);
   }

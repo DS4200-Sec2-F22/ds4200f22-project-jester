@@ -247,6 +247,9 @@ let nodeElements = NETWORKFRAME
 
   function resetVis() {
 
+    // hides the tooltip
+    tooltip.style("opacity", 0);
+
     NETWORKFRAME.selectAll('circle').remove();
     NETWORKFRAME.selectAll('line').remove();
     NETWORKFRAME.selectAll('text').remove();

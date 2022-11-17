@@ -30,14 +30,12 @@ const links = data.links;
 const FRAME_HEIGHT = 700;
 const FRAME_WIDTH = 700;
 const MARGINS = { left: 50, right: 50, top: 50, bottom: 50 };
-const SCALE = 50;
-const PADDING = 20;
 
 const features = ["Acousticness", "Danceability", "Energy", "Instrumentalness", "Liveness", "Speechiness", "Valence"];
 let ticks = [2, 4, 6, 8, 10];
 let radialScale = d3.scaleLinear()
-          .domain([0, 10])
-          .range([0, 250]);
+.domain([0, 10])
+.range([0, 250]);
 
 
 
@@ -53,7 +51,7 @@ let activeLinks = [];
 let hoverNodeColor = '#FF8D32'
 let defaultNodeColor = '#A400EC' 
 let defaultLinkColor = '#A400EC'
-let original_opacity = .4;
+let original_opacity = .8;
 let hover_opacity = .7;
 let original_node_opacity = .8;
 let hover_node_opacity = 1;
@@ -81,7 +79,7 @@ simulation = d3.forceSimulation(activeNodes)
 .on('tick', ticked);
 
 simulation.force('link', d3.forceLink()
-  .strength(link => link.strength));
+.strength(link => link.strength));
 
 let linkElements = NETWORKFRAME
 .append('g')
@@ -166,7 +164,7 @@ let nodeElements = NETWORKFRAME
   document.getElementById("button").addEventListener("click", buttonClicked);
   
   function node_hover_over(event, d) {
-
+    
     d3.select(event.currentTarget)
     .style("fill", hoverNodeColor)
     .style('stroke',hoverNodeColor)
@@ -210,7 +208,7 @@ let nodeElements = NETWORKFRAME
   .append("svg")
   .attr("width", 650)
   .attr("height", 800);
-
+  
   setupSpider();
   
   
@@ -244,12 +242,12 @@ let nodeElements = NETWORKFRAME
     addNode(node);
     neighborNodes.push(node);
   }
-
+  
   function resetVis() {
-
+    
     // hides the tooltip
     tooltip.style("opacity", 0);
-
+    
     NETWORKFRAME.selectAll('circle').remove();
     NETWORKFRAME.selectAll('line').remove();
     NETWORKFRAME.selectAll('text').remove();
@@ -265,7 +263,7 @@ let nodeElements = NETWORKFRAME
     simulation.force("link", d3.forceLink(activeLinks).id(d => d.id));
     
     simulation.force('link', d3.forceLink()
-      .strength(link => link.strength));
+    .strength(link => link.strength));
     
     linkElements = NETWORKFRAME
     .attr('stroke-width', 1)
@@ -294,27 +292,27 @@ let nodeElements = NETWORKFRAME
       .on("start", dragstarted)
       .on("drag", dragged)
       .on("end", dragended));
-
-    textElement = NETWORKFRAME
-    .selectAll("text")
-    .data(activeNodes)
-    .enter()
-    .append("text")
-    .style("font", font)
-    .attr('font-weight', 100)
-    .attr('pointer-events', 'none')
-    .attr("stroke", text_color)
-    .attr("stroke-width", 1.2)
-    .text(d => d.title_track);
-            
-    // hides the tooltip
-    tooltip.style("opacity", 0);
-
-    console.log(activeLinks);
-  }
-
-  function findInformationWithSong(songTitle) {
-    for (let i = 0; i < nodes.length; i++) {
+      
+      textElement = NETWORKFRAME
+      .selectAll("text")
+      .data(activeNodes)
+      .enter()
+      .append("text")
+      .style("font", font)
+      .attr('font-weight', 100)
+      .attr('pointer-events', 'none')
+      .attr("stroke", text_color)
+      .attr("stroke-width", 1.2)
+      .text(d => d.title_track);
+      
+      // hides the tooltip
+      tooltip.style("opacity", 0);
+      
+      console.log(activeLinks);
+    }
+    
+    function findInformationWithSong(songTitle) {
+      for (let i = 0; i < nodes.length; i++) {
         // console.log(nodes[i].title_track)
         if(nodes[i].title_track == songTitle) {
           return nodes[i]
@@ -383,7 +381,8 @@ let nodeElements = NETWORKFRAME
     
     // -----------------PLOT 2----------------
     
-    
+
+    // define the color scheme for the spider chart paths 
     let colors = d3
     .scaleOrdinal(
       ["#ffd700",
@@ -392,18 +391,18 @@ let nodeElements = NETWORKFRAME
       "#ea5f94",
       "#cd34b5",
       "#9d02d7",
-      "#0000ff"]);
-
-
-    function spider_mouseover(event, d) {
-      d3.select(event.currentTarget).style("opacity", hover_opacity);
-    }
-
-    function spider_mouseleave(event, d) {
-      d3.select(event.currentTarget).style("opacity", original_opacity);
-    }
-
-
+      "#2c75ff"]);
+      
+      
+      function spider_mouseover(event, d) {
+        d3.select(event.currentTarget).style("opacity", hover_opacity);
+      }
+      
+      function spider_mouseleave(event, d) {
+        d3.select(event.currentTarget).style("opacity", original_opacity);
+      }
+      
+      
       function draw(neighborNodes) {//todo: draw should be modified to not take in an id and just draw all nodes in neighborNodes[]
         SPIDER_GRAPH.selectAll("*").remove();
         let data = [];
@@ -443,13 +442,13 @@ let nodeElements = NETWORKFRAME
         
         
         setupSpider();
-
+        
         let line = d3.line()
         .x(d => d.x)
         .y(d => d.y);
-
-
-
+        
+        
+        
         function getPathCoordinates(data_point) {
           let coordinates = [];
           for (let i = 0; i < features.length; i++) {
@@ -459,102 +458,105 @@ let nodeElements = NETWORKFRAME
           }
           return coordinates;
         }
-
+        
         for (let i = 0; i < data.length; i++) {
           let d = data[i];
           let color = colors(i);
           let coordinates = getPathCoordinates(d);
-
-              //draw the path element
+          
+          //draw the path element
           SPIDER_GRAPH.append("path")
-              .datum(coordinates)
-              .attr("d", line)
-              .attr("stroke-width", 1)
-              .attr("stroke", color)
-              .attr("fill", color)
-              .attr("stroke-opacity", 1)
-              .attr("opacity", original_opacity)
-              .on("mouseover", spider_mouseover)
-              .on("mouseleave", spider_mouseleave);
-              
-              
-            }
-            
-            // get name of each neighbor node
-            function getSongNamesFromNeighbor(arr) {
-              let listOfNames = []
-              for(let i=0; i<arr.length; i++){
-                listOfNames.push(arr[i].title_track)
-              }
-              return listOfNames;
-            }
-            
-            
-            // Add one dot in the legend for each name.
+          .datum(coordinates)
+          .attr("d", line)
+          .attr("stroke-width", 1)
+          .attr("stroke", color)
+          .attr("fill", color)
+          .attr("fill-opacity", 0.3)
+          .attr("stroke-opacity", original_opacity)
+          .attr("opacity", original_opacity)
+          .on("mouseover", spider_mouseover)
+          .on("mouseleave", spider_mouseleave);
+          
+          
+        }
+        
+        // get name of each neighbor node
+        function getSongNamesFromNeighbor(arr) {
+          let listOfNames = []
+          for(let i=0; i<arr.length; i++){
+            listOfNames.push(arr[i].title_track)
+          }
+          return listOfNames;
+        }
+        
+        
+        // Add one dot in the legend for each name.
         SPIDER_GRAPH.selectAll("mydots")
-            .data(getSongNamesFromNeighbor(neighborNodes))
-            .enter()
-            .append("circle")
-            .attr("cx", MARGINS.left)
-            .attr("cy", function(d,i){ return FRAME_HEIGHT - 125 + i*25}) // 100 is where the first dot appears. 25 is the distance between dots
-            .attr("r", 7)
-            .style("fill", function(d, i){ return colors(i);})
-            
-            // Add one dot in the legend for each name.
+        .data(getSongNamesFromNeighbor(neighborNodes))
+        .enter()
+        .append("circle")
+        .attr("cx", MARGINS.left)
+        .attr("cy", function(d,i){ return FRAME_HEIGHT - 125 + i*25}) // 100 is where the first dot appears. 25 is the distance between dots
+        .attr("r", 7)
+        .style("fill", function(d, i){ return colors(i);})
+        
+        // Add one dot in the legend for each name.
         SPIDER_GRAPH.selectAll("mylabels")
-            .data(getSongNamesFromNeighbor(neighborNodes))
-            .enter()
-            .append("text")
-            .attr("x", MARGINS.left +20)
-            .attr("y", function(d,i){ return FRAME_HEIGHT - 125 + i * 25}) // 100 is where the first dot appears. 25 is the distance between dots
-            .style("fill", function(d, i){ return colors(i);})
-            .text(function(d){ return d})
-            .attr("text-anchor", "left")
-            .style("alignment-baseline", "middle")
-          }
+        .data(getSongNamesFromNeighbor(neighborNodes))
+        .enter()
+        .append("text")
+        .attr("x", MARGINS.left +20)
+        .attr("y", function(d,i){ return FRAME_HEIGHT - 125 + i * 25}) // 100 is where the first dot appears. 25 is the distance between dots
+        .style("fill", function(d, i){ return colors(i);})
+        .text(function(d){ return d})
+        .attr("text-anchor", "left")
+        .style("alignment-baseline", "middle")
+      }
+      
+      
+      
+      function resetButtonClicked() {
+        
+        activeLinks = [];
+        activeNodes = [];
+        neighborNodes = [];
+        
+        SPIDER_GRAPH.selectAll("*").remove();
+        
+        NETWORKFRAME.selectAll("*").remove();
+        
+        document.getElementById("songTitle").innerHTML = "Song Added: ";
+        
+      }
+      
+      document.getElementById("reset").addEventListener("click", resetButtonClicked);
+      
+      function angleToCoordinate(angle, value) {
+        let x = Math.cos(angle) * radialScale(value);
+        let y = Math.sin(angle) * radialScale(value);
+        return { "x": 300 + x, "y": 300 - y };
+      }
+      
+      function setupSpider() {
+        
+        ticks.forEach(t =>
+          SPIDER_GRAPH.append("circle")
+          .attr("cx", 300)
+          .attr("cy", 300)
+          .attr("fill", "none")
+          .attr("stroke", "white")
+          .attr("stroke-width", 1.2)
+          .attr("r", radialScale(t))
+          );
           
-          
-          
-          function resetButtonClicked() {
-           
-            activeLinks = [];
-            activeNodes = [];
-            neighborNodes = [];
-
-            SPIDER_GRAPH.selectAll("*").remove();
-
-            NETWORKFRAME.selectAll("*").remove();
-
-            document.getElementById("songTitle").innerHTML = "Song Added: ";
-            
-          }
-          
-          document.getElementById("reset").addEventListener("click", resetButtonClicked);
-
-          function angleToCoordinate(angle, value) {
-            let x = Math.cos(angle) * radialScale(value);
-            let y = Math.sin(angle) * radialScale(value);
-            return { "x": 300 + x, "y": 300 - y };
-          }
-
-          function setupSpider() {
-
-            ticks.forEach(t =>
-              SPIDER_GRAPH.append("circle")
-              .attr("cx", 300)
-              .attr("cy", 300)
-              .attr("fill", "none")
-              .attr("stroke", "white")
-              .attr("stroke-width", 1.2)
-              .attr("r", radialScale(t))
-              );
-
-            ticks.forEach(t =>
-              SPIDER_GRAPH.append("text")
-              .attr("x", 305)
-              .attr("y", 300 - radialScale(t))
-              .text((t / 10).toString())
-              );
+          ticks.forEach(t =>
+            SPIDER_GRAPH.append("text")
+            .attr("x", 305)
+            .attr("y", 300 - radialScale(t))
+            .attr("stroke", "white")
+            .attr("stroke-width", 1.4)
+            .text((t / 10).toString())
+            );
             
             
             for (let i = 0; i < features.length; i++) {
@@ -582,4 +584,5 @@ let nodeElements = NETWORKFRAME
               .text(ft_name);
             }
           }
+          
           

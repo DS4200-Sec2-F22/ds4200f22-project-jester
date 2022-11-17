@@ -39,28 +39,24 @@ let radialScale = d3.scaleLinear()
 
 
 
-
-// ----------SETTING THE FRAME FOR BOTH VISUALIZATIONS----------------
-
-// -----------------PLOT 1-----------------
+/*-------------------------------- CONSTANTS & VARIABLES --------------------------------*/
 
 let activeNodes = []; 
 let neighborNodes = [];
 let activeLinks = [];
 
-let hoverNodeColor = '#FF8D32'
-let defaultNodeColor = '#A400EC' 
-let defaultLinkColor = '#A400EC'
+let hoverNodeColor = '#FF8D32';
+let defaultNodeColor = '#A400EC';
+let defaultLinkColor = '#A400EC';
 let original_opacity = .8;
+let fill_opacity =.3;
 let hover_opacity = .7;
 let original_node_opacity = .8;
 let hover_node_opacity = 1;
 let font = '14px Arial';
 let text_color = 'white';
 
-console.log(activeLinks);
-// console.log(links);
-// console.log(data.links);
+/*-------------------------------- SETTING THE FRAME FOR BOTH VISUALIZATIONS --------------------------------*/
 
 let NETWORKFRAME = d3.select("#vis1")
 .append("svg")
@@ -68,6 +64,16 @@ let NETWORKFRAME = d3.select("#vis1")
 .attr("width", FRAME_WIDTH)
 .attr("class", "frame");
 
+const SPIDER_GRAPH = d3.select("#vis2")
+.append("svg")
+.attr("width", 650)
+.attr("height", 800);
+
+setupSpider();
+
+/*-------------------------------- VIS 1: NETWORK GRAPH --------------------------------*/
+
+// simulation for network placement
 let simulation = d3.forceSimulation(nodes)
 .nodes(nodes)
 .force('link', d3.forceLink(links).id(d => d.id));
@@ -81,6 +87,7 @@ simulation = d3.forceSimulation(activeNodes)
 simulation.force('link', d3.forceLink()
 .strength(link => link.strength));
 
+// representation of network edges
 let linkElements = NETWORKFRAME
 .append('g')
 .attr("fill", "none")
@@ -91,6 +98,7 @@ let linkElements = NETWORKFRAME
 .append('line')
 .attr('stroke', defaultLinkColor);
 
+// representation of network nodes
 let nodeElements = NETWORKFRAME
 .append('g')
 .selectAll('circle')
@@ -111,42 +119,35 @@ let nodeElements = NETWORKFRAME
   .on("start", dragstarted)
   .on("drag", dragged)
   .on("end", dragended));
-  // TESTING FOR DISPLAYING NEAREST NODE CONNECTIONS
-  // .on("mouseenter", (evt, d) => {
-  //   linkElements
-  //     .attr("display", "none")
-  //     .filter(l => l.source.id === d.id || l.target.id === d.id)
-  //     .attr("display", "block");
-  // })
-  // .on("mouseleave", evt => {
-  //   linkElements.attr("display", "block");
-  // });
   
-  let textElement = NETWORKFRAME
-  .append("g")
-  .selectAll("text")
-  .data(activeNodes)
-  .enter()
-  .append("text")
-  .style("font", font)
-  .attr('font-weight', 100)
-  .attr('pointer-events', 'none')
-  .text(d => d.title_track);
+// song titles
+let textElement = NETWORKFRAME
+.append("g")
+.selectAll("text")
+.data(activeNodes)
+.enter()
+.append("text")
+.style("font", font)
+.attr('font-weight', 100)
+.attr('pointer-events', 'none')
+.text(d => d.title_track);
+ 
+
+function ticked() {
+  linkElements
+  .attr("x1", d => d.source.x)
+  .attr("y1", d => d.source.y)
+  .attr("x2", d => d.target.x)
+  .attr("y2", d => d.target.y);
   
-  function ticked() {
-    linkElements
-    .attr("x1", d => d.source.x)
-    .attr("y1", d => d.source.y)
-    .attr("x2", d => d.target.x)
-    .attr("y2", d => d.target.y);
-    
-    nodeElements.attr("cx", d => d.x).attr("cy", d => d.y);
-    
-    textElement
-    .attr("x", d => d.x - 5)
-    .attr("y", d => d.y + 5);
+  nodeElements.attr("cx", d => d.x).attr("cy", d => d.y);
+  
+  textElement
+  .attr("x", d => d.x - 5)
+  .attr("y", d => d.y + 5);
   }
   
+  // add tooltip
   let tooltip = d3.select("#vis1")
   .append("div")
   .style("opacity", 0)
@@ -163,6 +164,7 @@ let nodeElements = NETWORKFRAME
   
   document.getElementById("button").addEventListener("click", buttonClicked);
   
+  // color node and its neighbors on hover
   function node_hover_over(event, d) {
     
     d3.select(event.currentTarget)
@@ -204,27 +206,22 @@ let nodeElements = NETWORKFRAME
     
   }
   
-  const SPIDER_GRAPH = d3.select("#vis2")
-  .append("svg")
-  .attr("width", 650)
-  .attr("height", 800);
+
   
-  setupSpider();
-  
-  
+  // adds node with correspodnign song title received from user input
   function buttonClicked() {
     const songTitle = document.getElementById('information').value; // gets the information from the textbox
     document.getElementById('information').value = ""; // sets textbox to "" 
     
     if (findInformationWithSong(songTitle) != -1) {
       const node = findInformationWithSong(songTitle)
-      // draw(node, svg); //todo: this can be removed when we integrate linking
       addNode(node);
     } else {
       alert("Song not found :(");
     }
   }
   
+  // adds node by reseting vis and links
   function addNode(node) {
     // console.log(node);
     if (!activeNodes.reduce((prev, curr) => (curr.id == node.id) || (prev), false)) {
@@ -237,8 +234,8 @@ let nodeElements = NETWORKFRAME
     resetVis();
   }
   
+  // adds node to the neighborNode array
   function addNeighbor(node) {
-    console.log("addNeighbor called");
     addNode(node);
     neighborNodes.push(node);
   }
@@ -252,6 +249,7 @@ let nodeElements = NETWORKFRAME
     NETWORKFRAME.selectAll('line').remove();
     NETWORKFRAME.selectAll('text').remove();
     
+    // force simulation to structure node placement
     simulation = simulation.nodes(activeNodes)
     .force('charge', d3.forceManyBody().strength(-250))
     .force('centerX', d3.forceX())
@@ -265,6 +263,7 @@ let nodeElements = NETWORKFRAME
     simulation.force('link', d3.forceLink()
     .strength(link => link.strength));
     
+    // representation of network edges
     linkElements = NETWORKFRAME
     .attr('stroke-width', 1)
     .selectAll('line')
@@ -273,6 +272,7 @@ let nodeElements = NETWORKFRAME
     .append('line')
     .attr('stroke', defaultLinkColor);
     
+    // represetnation of network nodes
     nodeElements = NETWORKFRAME
     .selectAll('circle')
     .data(activeNodes)
@@ -307,13 +307,12 @@ let nodeElements = NETWORKFRAME
       
       // hides the tooltip
       tooltip.style("opacity", 0);
-      
       console.log(activeLinks);
     }
     
+    // finds the node for the corresponding song
     function findInformationWithSong(songTitle) {
       for (let i = 0; i < nodes.length; i++) {
-        // console.log(nodes[i].title_track)
         if(nodes[i].title_track == songTitle) {
           return nodes[i]
         }
@@ -321,9 +320,8 @@ let nodeElements = NETWORKFRAME
       return -1;
     }
     
+    // adds neighboring nodes to array and draws them
     function point_clicked(event, d) {
-      // css toggle; when point is clicked, 'yes_border' is activated
-      //d3.select("circle").classed("yes_border", d3.select(this).classed("yes_border") ? false : true); //todo: should class everything in neighborNodes after resetVis
       
       const id = d.id;
       
@@ -334,8 +332,6 @@ let nodeElements = NETWORKFRAME
       
       for (let i = 0; i < tempLinks.length; i++) {
         if(tempLinks[i].source.id == id) {
-          // console.log("matched source");
-          
           for (let j = 0; j < tempNodes.length; j++) {
             if (tempLinks[i].target.id == tempNodes[j].id) {
               addNeighbor(tempNodes[j]);
@@ -343,10 +339,10 @@ let nodeElements = NETWORKFRAME
           }
         }
       }
-      // console.log(neighborNodes);
       draw(neighborNodes);
     }
     
+    // updates links when new node is added
     function resetLinks(node) {
       for (let i = 0; i < activeNodes.length; i++) {
         for (let k = 0; k < links.length; k++) {
@@ -379,10 +375,9 @@ let nodeElements = NETWORKFRAME
       d.fy = null;
     }
     
-    // -----------------PLOT 2----------------
-    
+    /*-------------------------------- SPIDER CHART --------------------------------*/
 
-    // define the color scheme for the spider chart paths 
+    // define the color categorical scheme for the spider chart paths 
     let colors = d3
     .scaleOrdinal(
       ["#ffd700",
@@ -393,25 +388,25 @@ let nodeElements = NETWORKFRAME
       "#9d02d7",
       "#2c75ff"]);
       
-      
+      // change spider opacity on hover
       function spider_mouseover(event, d) {
-        d3.select(event.currentTarget).style("opacity", hover_opacity);
+        d3.select(event.currentTarget).style("fill-opacity", hover_opacity);
       }
       
+     // return to orignial opacity on mouseleave
       function spider_mouseleave(event, d) {
-        d3.select(event.currentTarget).style("opacity", original_opacity);
+        d3.select(event.currentTarget).style("fill-opacity", .3);
       }
       
-      
-      function draw(neighborNodes) {//todo: draw should be modified to not take in an id and just draw all nodes in neighborNodes[]
+      // draw songs on spider based on their feature dimensions
+      function draw(neighborNodes) {
         SPIDER_GRAPH.selectAll("*").remove();
         let data = [];
-        // console.log('ACOUSTICNESS' + neighborNodes[0].acousticness)
-        
         
         for(let i=0;i<neighborNodes.length;i++) {
           let point = {};
           
+          // song features
           const acoustincness = neighborNodes[i].acousticness;
           const danceability = neighborNodes[i].danceability;
           const energy = neighborNodes[i].energy;
@@ -420,12 +415,7 @@ let nodeElements = NETWORKFRAME
           const speechiness = neighborNodes[i].speechiness;
           const valence = neighborNodes[i].valence;
           
-          // removed tempo because it's not from 0 - 1 
-          
-          
           let information = [acoustincness, danceability, energy, instrumentalness, liveness, speechiness, valence];
-          
-          // console.log('INFORMTION' +information)
           
           point["Acousticness"] = information[0] * 10;
           point["Danceability"] = information[1] * 10;
@@ -438,17 +428,13 @@ let nodeElements = NETWORKFRAME
           data.push(point);
         }
         
-        // console.log("INSIDE DRAW" + data.toString());
-        
-        
         setupSpider();
         
         let line = d3.line()
         .x(d => d.x)
         .y(d => d.y);
         
-        
-        
+        // calculates coordinates for spider placement for each point
         function getPathCoordinates(data_point) {
           let coordinates = [];
           for (let i = 0; i < features.length; i++) {
@@ -468,16 +454,13 @@ let nodeElements = NETWORKFRAME
           SPIDER_GRAPH.append("path")
           .datum(coordinates)
           .attr("d", line)
-          .attr("stroke-width", 1)
+          .attr("stroke-width", 3)
           .attr("stroke", color)
           .attr("fill", color)
-          .attr("fill-opacity", 0.3)
+          .attr("fill-opacity", fill_opacity)
           .attr("stroke-opacity", original_opacity)
-          .attr("opacity", original_opacity)
           .on("mouseover", spider_mouseover)
           .on("mouseleave", spider_mouseleave);
-          
-          
         }
         
         // get name of each neighbor node
@@ -488,10 +471,11 @@ let nodeElements = NETWORKFRAME
           }
           return listOfNames;
         }
-        
+
+        /*-------------------------------- LEGEND --------------------------------*/
         
         // Add one dot in the legend for each name.
-        SPIDER_GRAPH.selectAll("mydots")
+        SPIDER_GRAPH.selectAll("dots")
         .data(getSongNamesFromNeighbor(neighborNodes))
         .enter()
         .append("circle")
@@ -501,7 +485,7 @@ let nodeElements = NETWORKFRAME
         .style("fill", function(d, i){ return colors(i);})
         
         // Add one dot in the legend for each name.
-        SPIDER_GRAPH.selectAll("mylabels")
+        SPIDER_GRAPH.selectAll("labels")
         .data(getSongNamesFromNeighbor(neighborNodes))
         .enter()
         .append("text")
@@ -513,8 +497,7 @@ let nodeElements = NETWORKFRAME
         .style("alignment-baseline", "middle")
       }
       
-      
-      
+      // resets both visualizations to their initial states
       function resetButtonClicked() {
         
         activeLinks = [];
@@ -522,9 +505,7 @@ let nodeElements = NETWORKFRAME
         neighborNodes = [];
         
         SPIDER_GRAPH.selectAll("*").remove();
-        
         NETWORKFRAME.selectAll("*").remove();
-        
         document.getElementById("songTitle").innerHTML = "Song Added: ";
         
       }
@@ -537,6 +518,7 @@ let nodeElements = NETWORKFRAME
         return { "x": 300 + x, "y": 300 - y };
       }
       
+      // callable function to ensure spider is set up when reset 
       function setupSpider() {
         
         ticks.forEach(t =>

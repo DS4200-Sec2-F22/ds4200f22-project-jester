@@ -227,7 +227,6 @@ let nodeElements = NETWORKFRAME
     
     if (findInformationWithSong(songTitle) != -1) {
       const node = findInformationWithSong(songTitle)
-      // draw(node, svg); //todo: this can be removed when we integrate linking
       addNode(node);
     } else {
       alert("Song not found :(");
@@ -548,7 +547,7 @@ let nodeElements = NETWORKFRAME
       .enter()
       .append("circle")
       .attr("cx", MARGINS.left)
-      .attr("cy", function(d,i){ return FRAME_HEIGHT - 125 + i*25}) // 100 is where the first dot appears. 25 is the distance between dots
+      .attr("cy", function(d,i){ return FRAME_HEIGHT - 125 + i*25}) // Frame height -25 is where the first dot appears. 25 is the distance between dots
       .attr("r", 7)
       .style("fill", function(d, i){ return colors(i);})
       
@@ -558,7 +557,7 @@ let nodeElements = NETWORKFRAME
       .enter()
       .append("text")
       .attr("x", MARGINS.left +20)
-      .attr("y", function(d,i){ return FRAME_HEIGHT - 125 + i*25}) // 100 is where the first dot appears. 25 is the distance between dots
+      .attr("y", function(d,i){ return FRAME_HEIGHT - 125 + i*25}) // Frame height -25 is where the first dot appears. 25 is the distance between dots
       .style("fill", function(d, i){ return colors(i);})
       .text(function(d){ return d})
       .attr("text-anchor", "left")

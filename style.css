@@ -134,4 +134,8 @@ a {
   display: flex;
 }
 
+#canvas {
+  position: relative;
+}
+
 

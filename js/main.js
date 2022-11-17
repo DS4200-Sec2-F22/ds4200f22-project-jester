@@ -12,13 +12,12 @@
 
 Possible Additions:
 1. Toggle for each neighborNodes song to indicate whether it should be shown on spider chart or not
-2. Update node titles to song names and fix tooltip
-3. Drop down for number of nearest neighbors.
 
 */
 
+/*----------------------- CONSTANTS FOR PAGE SETUP ----------------------- */
 
-// ----------CONSTANTS FOR PAGE SETUP----------------
+
 import data from "../data/data.json" assert { type: "json" };
 
 const nodes = data.nodes; 
@@ -29,25 +28,21 @@ console.log(links);
 const FRAME_HEIGHT = 700;
 const FRAME_WIDTH = 700;
 const MARGINS = { left: 50, right: 50, top: 50, bottom: 50 };
-const SCALE = 50;
-const PADDING = 20;
 
 const VIS_HEIGHT = FRAME_HEIGHT - MARGINS.left - MARGINS.right;
 const VIS_WIDTH = FRAME_WIDTH - MARGINS.top - MARGINS.bottom; 
 
-// ----------SETTING THE FRAME FOR BOTH VISUALIZATIONS----------------
-
-// -----------------PLOT 1-----------------
+/*----------------------- PLOT 1: NETWORK GRAPH ----------------------- */
 
 let activeNodes = []; 
 let neighborNodes = [];
 let activeLinks = [];
 
-let hoverNodeColor = '#FF8D32'
-let defaultNodeColor = '#A400EC' 
-let defaultLinkColor = '#A400EC'
-let original_opacity = .4;
-let hover_opacity = .7;
+let hoverNodeColor = '#FF8D32';
+let defaultNodeColor = '#A400EC'; 
+let defaultLinkColor = '#A400EC';
+let original_opacity = .8;
+let hover_opacity = .6;
 let original_node_opacity = .8;
 let hover_node_opacity = 1;
 let font = '14px Arial';
@@ -57,12 +52,14 @@ console.log(activeLinks);
 console.log(links);
 console.log(data.links);
 
+// define frame to hold network graph
 let NETWORKFRAME = d3.select("#vis1")
 .append("svg")
 .attr("height", FRAME_HEIGHT)
 .attr("width", FRAME_WIDTH)
 .attr("class", "frame");
 
+// create a simulation that determines the placement of nodes
 let simulation = d3.forceSimulation(nodes)
 .nodes(nodes)
 .force('link', d3.forceLink(links).id(d => d.id));
@@ -108,16 +105,6 @@ let nodeElements = NETWORKFRAME
   .on("start", dragstarted)
   .on("drag", dragged)
   .on("end", dragended));
-  // TESTING FOR DISPLAYING NEAREST NODE CONNECTIONS
-  // .on("mouseenter", (evt, d) => {
-  //   linkElements
-  //     .attr("display", "none")
-  //     .filter(l => l.source.id === d.id || l.target.id === d.id)
-  //     .attr("display", "block");
-  // })
-  // .on("mouseleave", evt => {
-  //   linkElements.attr("display", "block");
-  // });
   
   let textElement = NETWORKFRAME
   .append("g")
@@ -160,12 +147,24 @@ let nodeElements = NETWORKFRAME
   
   document.getElementById("button").addEventListener("click", buttonClicked);
   
+  // highlight hovered node and corresponding neighbors
   function node_hover_over(event, d) {
     
     d3.select(event.currentTarget)
     .style("fill", hoverNodeColor)
     .style('stroke',hoverNodeColor)
     .style('opacity', hover_node_opacity);
+
+    nodeElements
+    .filter(function(d,o) { 
+      console.log(d)
+      console.log(o)
+      console.log(isConnected(d, o))
+      return isConnected(d,o) })
+    .style('fill', 'green');
+
+    console.log('NODES:' + nodeElements[0])
+
     
     tooltip.style("opacity", 1);
     
@@ -201,13 +200,27 @@ let nodeElements = NETWORKFRAME
     
     
   }
+
+  // build a dictionary of nodes that are linked
+  var linkedByIndex = {};
+  links.forEach(function(d) {
+      linkedByIndex[d.source.index + "," + d.target.index] = 1;
+  });
+
+  // check the dictionary to see if nodes are linked
+  function isConnected(a, b) {
+      return linkedByIndex[a.index + "," + b.index] || linkedByIndex[b.index + "," + a.index] || a.index == b.index;
+  }
+
+  console.log("IS CONNECTED: " + isConnected(nodes[0], nodes[4600]))
+  console.log(linkedByIndex)
   
   const svg = d3.select("#vis2")
   .append("svg")
   .attr("width", 650)
   .attr("height", 800);
   
-  
+  // inputs searched song into addNode()
   function buttonClicked() {
     const songTitle = document.getElementById('information').value; // gets the information from the textbox
     document.getElementById('information').value = ""; // sets textbox to "" 
@@ -221,6 +234,7 @@ let nodeElements = NETWORKFRAME
     }
   }
   
+  // adds new node to active node array to be reflected in network
   function addNode(node) {
     console.log(node);
     if (!activeNodes.reduce((prev, curr) => (curr.id == node.id) || (prev), false)) {
@@ -233,12 +247,14 @@ let nodeElements = NETWORKFRAME
     resetVis();
   }
   
+  // adds the nearest neighbors (most similar songs) of the node
   function addNeighbor(node) {
     console.log("addNeighbor called");
     addNode(node);
     neighborNodes.push(node);
   }
   
+  // resets visualization for each time a new node is added
   function resetVis() {
     
     NETWORKFRAME.selectAll('circle').remove();
@@ -300,7 +316,7 @@ let nodeElements = NETWORKFRAME
       
       console.log(activeLinks);
     }
-    
+    // returns node that matches inputted song title
     function findInformationWithSong(songTitle) {
       for (let i = 0; i < nodes.length; i++) {
         // console.log(nodes[i].title_track)
@@ -311,9 +327,8 @@ let nodeElements = NETWORKFRAME
       return -1;
     }
     
+    // expands network to include nearest neighbors on click
     function point_clicked(event, d) {
-      // css toggle; when point is clicked, 'yes_border' is activated
-      //d3.select("circle").classed("yes_border", d3.select(this).classed("yes_border") ? false : true); //todo: should class everything in neighborNodes after resetVis
       
       const id = d.id;
       
@@ -336,7 +351,7 @@ let nodeElements = NETWORKFRAME
       console.log(neighborNodes);
       draw(neighborNodes);
     }
-    
+    // updates links to include new nodes
     function resetLinks(node) {
       for (let i = 0; i < activeNodes.length; i++) {
         for (let k = 0; k < links.length; k++) {
@@ -369,9 +384,9 @@ let nodeElements = NETWORKFRAME
       d.fy = null;
     }
     
-    // -----------------PLOT 2----------------
+    /*----------------------- PLOT 2: SPIDER CHART ----------------------- */
     
-    
+    // define color scheme for spider chart paths
     let colors = d3
     .scaleOrdinal(
       ["#ffd700",
@@ -380,196 +395,188 @@ let nodeElements = NETWORKFRAME
       "#ea5f94",
       "#cd34b5",
       "#9d02d7",
-      "#0000ff"]);
+      "#2c75ff"]);
+      
+  
+    // function that draws each song across its feature dimensions
+    function draw(neighborNodes) {
+      svg.selectAll("*").remove();
+      let features = ["Acousticness", "Danceability", "Energy", "Instrumentalness", "Liveness", "Speechiness", "Valence"];
+      let data = [];
+      console.log('ACOUSTICNESS' + neighborNodes[0].acousticness)
+        
+    // define an information variable for each node    
+    for(let i=0;i<neighborNodes.length;i++) {
+      let point = {};
+      
+      // song features
+      const acoustincness = neighborNodes[i].acousticness;
+      const danceability = neighborNodes[i].danceability;
+      const energy = neighborNodes[i].energy;
+      const instrumentalness = neighborNodes[i].instrumentalness;
+      const liveness = neighborNodes[i].liveness;
+      const speechiness = neighborNodes[i].speechiness;
+      const valence = neighborNodes[i].valence;
+      
+      let information = [acoustincness, danceability, energy, instrumentalness, liveness, speechiness, valence];
+      
+      point["Acousticness"] = information[0] * 10;
+      point["Danceability"] = information[1] * 10;
+      point["Energy"] = information[2] * 10;
+      point["Instrumentalness"] = information[3] * 10;
+      point["Liveness"] = information[4] * 10;
+      point["Speechiness"] = information[5] * 10;
+      point["Valence"] = information[6] * 10;
+      
+      data.push(point);
+    }
+
+      let radialScale = d3.scaleLinear()
+                              .domain([0, 10])
+                              .range([0, 250]);
+      let ticks = [2, 4, 6, 8, 10];
       
       
+    // add rings to spider chart  
+      ticks.forEach(t =>
+        svg.append("circle")
+        .attr("cx", 300)
+        .attr("cy", 300)
+        .attr("fill", "none")
+        .attr("stroke", "white")
+        .attr("stroke-width", 1.2)
+        .attr("r", radialScale(t))
+        );
+
+     // add tick markets to spider chart     
+      ticks.forEach(t =>
+        svg.append("text")
+        .attr("x", 305)
+        .attr("y", 300 - radialScale(t))
+        .attr("stroke", "white")
+        .text((t / 10).toString())
+        );
+          
+      
+      function angleToCoordinate(angle, value) {
+        let x = Math.cos(angle) * radialScale(value);
+        let y = Math.sin(angle) * radialScale(value);
+        return { "x": 300 + x, "y": 300 - y };
+      }
+          
+      for (let i = 0; i < features.length; i++) {
+        let ft_name = features[i];
+        let angle = (Math.PI / 2) + (2 * Math.PI * i / features.length);
+        let line_coordinate = angleToCoordinate(angle, 10);
+        let label_coordinate = angleToCoordinate(angle, 10.5);
+          
+      //draw axis line
+      svg.append("line")
+      .attr("x1", 300)
+      .attr("y1", 300)
+      .attr("x2", line_coordinate.x)
+      .attr("y2", line_coordinate.y)
+      .attr("stroke", "white")
+      .attr("stroke-width", 1,2);
+          
+          
+      //draw axis label
+      svg.append("text")
+      .attr("x", label_coordinate.x)
+      .attr("y", label_coordinate.y)
+      .attr("stroke", "white")
+      .attr("stroke-width", 1.3)
+      .text(ft_name);
+    }
+        
+      let line = d3.line()
+      .x(d => d.x)
+      .y(d => d.y);
+            
+            
+      function getPathCoordinates(data_point) {
+        let coordinates = [];
+        for (let i = 0; i < features.length; i++) {
+          let ft_name = features[i];
+          let angle = (Math.PI / 2) + (2 * Math.PI * i / features.length);
+          coordinates.push(angleToCoordinate(angle, data_point[ft_name]));
+        }
+        return coordinates;
+      }
+        
+      for (let i = 0; i < data.length; i++) {
+        let d = data[i];
+        let color = colors(i);
+        let coordinates = getPathCoordinates(d);
+
+        //draw the path element
+        svg.append("path")
+        .datum(coordinates)
+        .attr("d", line)
+        .attr("stroke-width", 2)
+        .attr("stroke", color)
+        .attr("stroke-opacity", original_opacity)
+        .attr("fill", color)
+        .attr("fill-opacity", .3)
+        .on("mouseover", spider_mouseover)
+        .on("mouseleave", spider_mouseleave);
+        
+      }
+
       function spider_mouseover(event, d) {
-        d3.select(event.currentTarget).style("opacity", hover_opacity);
+        d3.select(event.currentTarget).style("fill-opacity", hover_opacity);
       }
       
       function spider_mouseleave(event, d) {
-        d3.select(event.currentTarget).style("opacity", original_opacity);
+        d3.select(event.currentTarget).style("fill-opacity", 0);
+      }
+
+      /*----------------------- LEGEND ----------------------- */
+        
+      // get name of each neighbor node
+      function getSongNamesFromNeighbor(arr) {
+        let listOfNames = []
+        for(let i=0; i<arr.length; i++){
+          listOfNames.push(arr[i].title_track)
+        }
+        return listOfNames;
+      }
+          
+      // Add one dot in the legend for each name.
+      let legend = svg.selectAll("dots")
+      .data(getSongNamesFromNeighbor(neighborNodes))
+      .enter()
+      .append("circle")
+      .attr("cx", MARGINS.left)
+      .attr("cy", function(d,i){ return FRAME_HEIGHT - 125 + i*25}) // 100 is where the first dot appears. 25 is the distance between dots
+      .attr("r", 7)
+      .style("fill", function(d, i){ return colors(i);})
+      
+      // Add one dot in the legend for each name.
+      legend = svg.selectAll("labels")
+      .data(getSongNamesFromNeighbor(neighborNodes))
+      .enter()
+      .append("text")
+      .attr("x", MARGINS.left +20)
+      .attr("y", function(d,i){ return FRAME_HEIGHT - 125 + i*25}) // 100 is where the first dot appears. 25 is the distance between dots
+      .style("fill", function(d, i){ return colors(i);})
+      .text(function(d){ return d})
+      .attr("text-anchor", "left")
+      .style("alignment-baseline", "middle")
+      }
+      // resets the vis to empy
+      function resetButtonClicked() {
+        
+        activeLinks = [];
+        activeNodes = [];
+        neighborNodes = [];
+        
+        svg.selectAll("*").remove();
+        NETWORKFRAME.selectAll("*").remove();
+        
+        document.getElementById("songTitle").innerHTML = "Song Added: ";
+        
       }
       
-      
-      
-      function draw(neighborNodes) {//todo: draw should be modified to not take in an id and just draw all nodes in neighborNodes[]
-        svg.selectAll("*").remove();
-        let features = ["Acousticness", "Danceability", "Energy", "Instrumentalness", "Liveness", "Speechiness", "Valence"];
-        let data = [];
-        console.log('ACOUSTICNESS' + neighborNodes[0].acousticness)
+      document.getElementById("reset").addEventListener("click", resetButtonClicked);
         
-        
-        for(let i=0;i<neighborNodes.length;i++) {
-          let point = {};
-          
-          const acoustincness = neighborNodes[i].acousticness;
-          const danceability = neighborNodes[i].danceability;
-          const energy = neighborNodes[i].energy;
-          const instrumentalness = neighborNodes[i].instrumentalness;
-          const liveness = neighborNodes[i].liveness;
-          const speechiness = neighborNodes[i].speechiness;
-          const valence = neighborNodes[i].valence;
-          
-          // removed tempo because it's not from 0 - 1 
-          
-          
-          let information = [acoustincness, danceability, energy, instrumentalness, liveness, speechiness, valence];
-          
-          console.log('INFORMTION' +information)
-          
-          point["Acousticness"] = information[0] * 10;
-          point["Danceability"] = information[1] * 10;
-          point["Energy"] = information[2] * 10;
-          point["Instrumentalness"] = information[3] * 10;
-          point["Liveness"] = information[4] * 10;
-          point["Speechiness"] = information[5] * 10;
-          point["Valence"] = information[6] * 10;
-          
-          data.push(point);
-        }
-        console.log("INSIDE DRAW" +data);
-        
-        
-        let radialScale = d3.scaleLinear()
-        .domain([0, 10])
-        .range([0, 250]);
-        let ticks = [2, 4, 6, 8, 10];
-        
-        
-        
-        ticks.forEach(t =>
-          svg.append("circle")
-          .attr("cx", 300)
-          .attr("cy", 300)
-          .attr("fill", "none")
-          .attr("stroke", "white")
-          .attr("stroke-width", 1.2)
-          .attr("r", radialScale(t))
-          );
-          
-          ticks.forEach(t =>
-            svg.append("text")
-            .attr("x", 305)
-            .attr("y", 300 - radialScale(t))
-            .text((t / 10).toString())
-            );
-            
-            
-            function angleToCoordinate(angle, value) {
-              let x = Math.cos(angle) * radialScale(value);
-              let y = Math.sin(angle) * radialScale(value);
-              return { "x": 300 + x, "y": 300 - y };
-            }
-            
-            for (let i = 0; i < features.length; i++) {
-              let ft_name = features[i];
-              let angle = (Math.PI / 2) + (2 * Math.PI * i / features.length);
-              let line_coordinate = angleToCoordinate(angle, 10);
-              let label_coordinate = angleToCoordinate(angle, 10.5);
-              
-              //draw axis line
-              svg.append("line")
-              .attr("x1", 300)
-              .attr("y1", 300)
-              .attr("x2", line_coordinate.x)
-              .attr("y2", line_coordinate.y)
-              .attr("stroke", "white")
-              .attr("stroke-width", 1,2);
-              
-              
-              //draw axis label
-              svg.append("text")
-              .attr("x", label_coordinate.x)
-              .attr("y", label_coordinate.y)
-              .attr("stroke", "white")
-              .attr("stroke-width", 1.3)
-              .text(ft_name);
-            }
-            
-            let line = d3.line()
-            .x(d => d.x)
-            .y(d => d.y);
-            
-            
-            
-            function getPathCoordinates(data_point) {
-              let coordinates = [];
-              for (let i = 0; i < features.length; i++) {
-                let ft_name = features[i];
-                let angle = (Math.PI / 2) + (2 * Math.PI * i / features.length);
-                coordinates.push(angleToCoordinate(angle, data_point[ft_name]));
-              }
-              return coordinates;
-            }
-            
-            for (let i = 0; i < data.length; i++) {
-              let d = data[i];
-              let color = colors(i);
-              let coordinates = getPathCoordinates(d);
-              
-              //draw the path element
-              svg.append("path")
-              .datum(coordinates)
-              .attr("d", line)
-              .attr("stroke-width", 1)
-              .attr("stroke", color)
-              .attr("fill", color)
-              .attr("stroke-opacity", 1)
-              .attr("opacity", original_opacity)
-              .on("mouseover", spider_mouseover)
-              .on("mouseleave", spider_mouseleave);
-              
-              
-            }
-            
-            // get name of each neighbor node
-            function getSongNamesFromNeighbor(arr) {
-              let listOfNames = []
-              for(let i=0; i<arr.length; i++){
-                listOfNames.push(arr[i].title_track)
-              }
-              return listOfNames;
-            }
-            
-            
-            // Add one dot in the legend for each name.
-            svg.selectAll("mydots")
-            .data(getSongNamesFromNeighbor(neighborNodes))
-            .enter()
-            .append("circle")
-            .attr("cx", MARGINS.left)
-            .attr("cy", function(d,i){ return FRAME_HEIGHT - 125 + i*25}) // 100 is where the first dot appears. 25 is the distance between dots
-            .attr("r", 7)
-            .style("fill", function(d, i){ return colors(i);})
-            
-            // Add one dot in the legend for each name.
-            svg.selectAll("mylabels")
-            .data(getSongNamesFromNeighbor(neighborNodes))
-            .enter()
-            .append("text")
-            .attr("x", MARGINS.left +20)
-            .attr("y", function(d,i){ return FRAME_HEIGHT - 125 + i*25}) // 100 is where the first dot appears. 25 is the distance between dots
-            .style("fill", function(d, i){ return colors(i);})
-            .text(function(d){ return d})
-            .attr("text-anchor", "left")
-            .style("alignment-baseline", "middle")
-          }
-          
-          
-          
-          function resetButtonClicked() {
-            
-            activeLinks = [];
-            activeNodes = [];
-            neighborNodes = [];
-            
-            svg.selectAll("*").remove();
-            NETWORKFRAME.selectAll("*").remove();
-            
-            document.getElementById("songTitle").innerHTML = "Song Added: ";
-            
-          }
-          
-          document.getElementById("reset").addEventListener("click", resetButtonClicked);
-          

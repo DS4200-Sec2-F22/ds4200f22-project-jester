@@ -47,6 +47,8 @@ body {
   place-content: center;
   font-family: system-ui;
   font-size: min(200%, 5vmin);
+  padding-top:150px;
+  
   
   
   
@@ -133,5 +135,26 @@ a {
   justify-content: center;
   display: flex;
 }
+
+
+.arrow {
+  height: 5vw;
+  width: 5vw;
+  border-style: solid;
+  border-color: white;
+  border-width: 0px 1px 1px 0px;
+  transform: rotate(45deg);
+}
+
+
+.arrows {
+  padding-top: 100px;
+  display: flex;
+  justify-content: center;
+  opacity: 12%;
+};
+
+
+
 
 

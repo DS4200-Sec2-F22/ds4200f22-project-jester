@@ -120,31 +120,31 @@ let nodeElements = NETWORKFRAME
   .on("drag", dragged)
   .on("end", dragended));
   
-// song titles
-let textElement = NETWORKFRAME
-.append("g")
-.selectAll("text")
-.data(activeNodes)
-.enter()
-.append("text")
-.style("font", font)
-.attr('font-weight', 100)
-.attr('pointer-events', 'none')
-.text(d => d.title_track);
- 
-
-function ticked() {
-  linkElements
-  .attr("x1", d => d.source.x)
-  .attr("y1", d => d.source.y)
-  .attr("x2", d => d.target.x)
-  .attr("y2", d => d.target.y);
+  // song titles
+  let textElement = NETWORKFRAME
+  .append("g")
+  .selectAll("text")
+  .data(activeNodes)
+  .enter()
+  .append("text")
+  .style("font", font)
+  .attr('font-weight', 100)
+  .attr('pointer-events', 'none')
+  .text(d => d.title_track);
   
-  nodeElements.attr("cx", d => d.x).attr("cy", d => d.y);
   
-  textElement
-  .attr("x", d => d.x - 5)
-  .attr("y", d => d.y + 5);
+  function ticked() {
+    linkElements
+    .attr("x1", d => d.source.x)
+    .attr("y1", d => d.source.y)
+    .attr("x2", d => d.target.x)
+    .attr("y2", d => d.target.y);
+    
+    nodeElements.attr("cx", d => d.x).attr("cy", d => d.y);
+    
+    textElement
+    .attr("x", d => d.x - 5)
+    .attr("y", d => d.y + 5);
   }
   
   // add tooltip
@@ -206,7 +206,7 @@ function ticked() {
     
   }
   
-
+  
   
   // adds node with correspodnign song title received from user input
   function buttonClicked() {
@@ -376,7 +376,7 @@ function ticked() {
     }
     
     /*-------------------------------- SPIDER CHART --------------------------------*/
-
+    
     // define the color categorical scheme for the spider chart paths 
     let colors = d3
     .scaleOrdinal(
@@ -391,7 +391,7 @@ function ticked() {
         d3.select(event.currentTarget).style("fill-opacity", hover_opacity);
       }
       
-     // return to orignial opacity on mouseleave
+      // return to orignial opacity on mouseleave
       function spider_mouseleave(event, d) {
         d3.select(event.currentTarget).style("fill-opacity", .3);
       }
@@ -469,7 +469,7 @@ function ticked() {
           }
           return listOfNames;
         }
-
+        
         /*-------------------------------- LEGEND --------------------------------*/
         
         // Add one dot in the legend for each name.
@@ -565,5 +565,4 @@ function ticked() {
               .text(ft_name);
             }
           }
-          
           

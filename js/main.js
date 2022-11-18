@@ -184,7 +184,7 @@ function ticked() {
   
   function node_move(event, d) {
     // add 'hover' tooltop movement functionality and text to the tooltip
-    tooltip.html("Category: " + d.id + "<p>Value: " + d.genre_top + "</p><p>Listens: " + d.listens + "</p>");
+    tooltip.html("Tempo: " + d.tempo + "<p>Genre: " + d.genre_top + "</p><p>Listens: " + d.listens + "</p>");
     
     // moves the tooltip with the mouse
     tooltip.style("transform", "translate(" + d3.pointer(event)[0] + "px," + (-620 + d3.pointer(event)[1]) + "px)");
@@ -508,6 +508,7 @@ function ticked() {
         NETWORKFRAME.selectAll("*").remove();
         document.getElementById("songTitle").innerHTML = "Song Added: ";
         
+        setupSpider();
       }
       
       document.getElementById("reset").addEventListener("click", resetButtonClicked);

@@ -133,7 +133,9 @@ a {
 
 .subsection {
   min-block-size: 50vh;
-
+}
+.subsection-last {
+  min-block-size: 90vh;
 }
 
 

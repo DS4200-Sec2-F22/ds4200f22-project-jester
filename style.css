@@ -152,6 +152,11 @@ a {
   
 }
 
+video {
+  display: block;
+  margin: auto;
+}
+
 /* First Visualization */
 #column1 {
   width: 50%;

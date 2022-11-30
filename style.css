@@ -28,12 +28,45 @@ body {
   animation: textclip 2s linear infinite;
   text-align:left;
   font-size: 16vmin;
-}
-
-@keyframes textclip {
+}@keyframes textclip {
   to {
     background-position: 200% center;
   }
+}
+
+.animate-charcter-2 {
+  padding-left: 10vh;
+  padding-top: 10vh;
+  text-transform: uppercase;
+  background-image: linear-gradient(
+  -225deg,
+  rgb(7, 9, 18), 
+  rgb(17, 133, 192),
+  hsl(100, 100%, 60%), 
+  hsl(200 100% 60%), 
+  hsl(100 100% 60%)
+  );
+  background-size: auto auto;
+  background-clip: border-box;
+  background-size: 200% auto;
+  color: #fff;
+  background-clip: text;
+  text-fill-color: transparent;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: textclip 2s linear infinite;
+  text-align:left;
+  font-size: 10vmin;
+} @keyframes textclip {
+  to {
+    background-position: 200% center;
+  }
+}
+
+
+.indent {
+  padding-left: 125px;
+  text-align: left;
 }
 
 /* intro text */
@@ -47,6 +80,8 @@ body {
   place-content: center;
   font-family: system-ui;
   font-size: min(200%, 5vmin);
+  padding-top:150px;
+  
   
   
   
@@ -96,6 +131,13 @@ a {
   min-block-size: 250vh;
 }
 
+.subsection {
+  min-block-size: 50vh;
+}
+.subsection-last {
+  min-block-size: 90vh;
+}
+
 
 .yes_border {
   fill: blueviolet;
@@ -133,5 +175,24 @@ a {
   justify-content: center;
   display: flex;
 }
+
+
+.arrow {
+  height: 5vw;
+  width: 5vw;
+  border-style: solid;
+  border-color: white;
+  border-width: 0px 1px 1px 0px;
+  transform: rotate(45deg);
+}
+
+
+.arrows {
+  padding-top: 100px;
+  display: flex;
+  justify-content: center;
+  opacity: 12%;
+};
+
 
 

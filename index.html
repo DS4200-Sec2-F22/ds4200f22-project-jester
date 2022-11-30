@@ -15,6 +15,13 @@
     
     <div class="intro">
         <h1>Visualization of a Music Recommendation Algorithm</h1>
+        
+        <div class="arrows">
+            <a>
+                <div class="arrow"></div>
+            </a>
+        </div>
+        
     </div>
     
     <div id="motivation" class="panel">
@@ -71,111 +78,132 @@
             method via
             Scikit-Learn to obtain an adjacency matrix for all nodes/songs. We then found top 6 matches and converted
             the data
-            to a json file.
+            to a json file. 
             
-            <br>
-            <br>
-            <br>
-            <br>
-            
-            The following are potential issues with our dataset. Data sampling might not be accurate for our population,
-            presenting biases as only independent artists who are willing to upload their music for free. As a result,
-            the bias
-            is that any music that is privatized will not be present. Some data quality issues are that some tracks do
-            not have
-            genres associated with them and there are multiple tracks with the same names. There are also some erroneous
-            lines
-            in the csv file that had to be removed. To correct this, we had to manually delete such rows from the csv
-            files.
-            Moreover, outliers in the data consist of six songs that are shorter than two seconds.
-            
-            <br>
-            <br>
-        </h1>
-    </div>
-
-    <div id="Data" class="panel">
-        <h2 class="animate-charcter"> Background</h2>
-        
-        <h1 class="text">
-            Original Data link:
-            <a href="https://github.com/mdeff/fma"> https://github.com/mdeff/fma</a>
-        </h1>
-    </div>
-    
-    <div id="visualization" class="panel">
-        <h2 class="animate-charcter"> Visualization</h2>
-        
-        <h1 class="text">
-            Explanation: To start engaging with our visualization, please follow these instructions:
-
-            <ol>
-                <li>Add a song using the search bar (see below for songs to start with, alternatively you can search for a song using on freemusicarchive.org)</li>
-                <li>Add neighboring songs to the graph by clicking your node, this click also adds the clicked node and its neighbors to the spider graph</li>
-                <li>You can also hover over an individual node to highlight it and its neighbors</li>
-                <li>When you're ready to start over, click the reset button</li>
-            </ol>
-
-            
-            Sample song titles are as follows:
-            
-            <ul>
-                <li>Electric Ave</li>
-                <li>Love</li>
-                <li>Food</li>
-                <li>Freeway</li>
-            </ul>
         </h1>
         
-        <div class="navbar">
-            <h3 class="text">Enter Song Title!</h3>
+        <div id="data-subsection" class="subsection">
+            <h2 class="animate-charcter-2">Data</h2>
             
-            <div class="enterSong">
-                <input id="information" label="id">
-                <button id="button"> Submit </button>
-                <button id="reset"> Reset </button>
-
+            <div class="indent">
+                <h1 class="text">
+                    Original Data link:
+                    <a href="https://github.com/mdeff/fma"> https://github.com/mdeff/fma</a>
+                </h1>
+                
+                <br>
+                
+                <h1 class="text">
+                    
+                    The following are potential issues with our dataset. Data sampling might not be accurate for our population,
+                    presenting biases as only independent artists who are willing to upload their music for free. As a result,
+                    the bias
+                    is that any music that is privatized will not be present. Some data quality issues are that some tracks do
+                    not have
+                    genres associated with them and there are multiple tracks with the same names. There are also some erroneous
+                    lines
+                    in the csv file that had to be removed. To correct this, we had to manually delete such rows from the csv
+                    files.
+                    Moreover, outliers in the data consist of six songs that are shorter than two seconds.
+                </h1>
             </div>
             
-            <h3 class="text" id="songTitle">Song Title: </h3>
-        </div>
-        
-        <div class="column">
             
-            <div id="column1">
-                <div id="vis1"></div>
+            
+            <div id="demo-link-subsection" class="subsection">
+                <h2 class="animate-charcter-2">Demo Link</h2>
+                
+                <div class="indent">
+                    <div>
+                        <h1 class="text">Link to a Video</h1>
+                    </div>
+                    
+                </div>
             </div>
             
-            <div id="column2">
-                <div id="vis2"></div>
+            <div id="final-report-link-subsection" class="subsection-last">
+                <h2 class="animate-charcter-2">Final Report Link</h2>
+                
+                <div class="indent">
+                    <h1 class="text">Final Report Link</h1>
+                </div>
+            </div>
+           
+            
+            <div id="visualization" class="panel">
+                <h2 class="animate-charcter"> Visualization</h2>
+                
+                <h1 class="text">
+                    Explanation: To start engaging with our visualization, please follow these instructions:
+                    
+                    <ol>
+                        <li>Add a song using the search bar (see below for songs to start with, alternatively you can search for a song using on freemusicarchive.org)</li>
+                        <li>Add neighboring songs to the graph by clicking your node, this click also adds the clicked node and its neighbors to the spider graph</li>
+                        <li>You can also hover over an individual node to highlight it and its neighbors</li>
+                        <li>When you're ready to start over, click the reset button</li>
+                    </ol>
+                    
+                    
+                    Sample song titles are as follows:
+                    
+                    <ul>
+                        <li>Electric Ave</li>
+                        <li>Love</li>
+                        <li>Food</li>
+                        <li>Freeway</li>
+                    </ul>
+                </h1>
+                
+                <div class="navbar">
+                    <h3 class="text">Enter Song Title!</h3>
+                    
+                    <div class="enterSong">
+                        <input id="information" label="id">
+                        <button id="button"> Submit </button>
+                        <button id="reset"> Reset </button>
+                        
+                    </div>
+                    
+                    <h3 class="text" id="songTitle">Song Title: </h3>
+                </div>
+                
+                <div class="column">
+                    
+                    <div id="column1">
+                        <div id="vis1"></div>
+                    </div>
+                    
+                    <div id="column2">
+                        <div id="vis2"></div>
+                    </div>
+                    
+                </div>
             </div>
             
-        </div>
-    </div>
-    
-    <div id="resources" class="panel">
-        <h2 class="animate-charcter">Resources</h2>
+            <div id="resources">
+                <h2 class="animate-charcter">Resources</h2>
+                
+                <h1 class="text">
+                    <ul>
+                        <li> <a href=" https://d3-graph-gallery.com/graph/scatter_basic.html">https://d3-graph-gallery.com/graph/scatter_basic.html</a></li>
+                        <li> <a href="https://d3-graph-gallery.com/graph/barplot_basic.html">https://d3-graph-gallery.com/graph/barplot_basic.html</a></li>
+                        <li><a href="https://observablehq.com/@philippkoytek/d3-part-3-brushing-and-linking">https://observablehq.com/@philippkoytek/d3-part-3-brushing-and-linking</a></li>
+                        <li><a href="https://d3-graph-gallery.com/spider">https://d3-graph-gallery.com/spider</a></li></li>
+                        <li><a href="https://observablehq.com/@mbostock/d3-force-directed-graph">https://observablehq.com/@mbostock/d3-force-directed-graph</a></li>
+                        <li><a href="https://medium.com/ninjaconcept/interactive-dynamic-force-directed-graphs-with-d3-da720c6d7811">https://medium.com/ninjaconcept/interactive-dynamic-force-directed-graphs-with-d3-da720c6d7811</a></li>
+                        <li><a href="https://www.d3indepth.com/force-layout">https://www.d3indepth.com/force-layout/</a></li>
+                        <li> <a href="https://observablehq.com/@brunolaranjeira/d3-v6-force-directed-graph-with-directional-straight-arrow">https://observablehq.com/@brunolaranjeira/d3-v6-force-directed-graph-with-directional-straight-arrow</a></li>
+                        <li><a href="https://freefrontend.com/css-scroll-effects/">https://freefrontend.com/css-scroll-effects/</a></li>
+                        <li><a href="https://codepen.io/argyleink/pen/wvMxEXM">https://codepen.io/argyleink/pen/wvMxEXM</a></li>
+                        <li><a href="https://alvarotrigo.com/blog/css-text-animations/">https://alvarotrigo.com/blog/css-text-animations/</a></li>
+                        <li><a href="https://developer.mozilla.org/en-US/docs/Web/CSS/max-block-size">https://developer.mozilla.org/en-US/docs/Web/CSS/max-block-size</a></li>
+                    </ul>
+                </h1>
+            </div>
+            
+            
+            <script type="module" src="js/main.js"></script>
+        </body>
         
-        <h1 class="text">
-            <ul>
-                <li> <a href=" https://d3-graph-gallery.com/graph/scatter_basic.html">https://d3-graph-gallery.com/graph/scatter_basic.html</a></li>
-                <li> <a href="https://d3-graph-gallery.com/graph/barplot_basic.html">https://d3-graph-gallery.com/graph/barplot_basic.html</a></li>
-                <li><a href="https://observablehq.com/@philippkoytek/d3-part-3-brushing-and-linking">https://observablehq.com/@philippkoytek/d3-part-3-brushing-and-linking</a></li>
-                <li><a href="https://d3-graph-gallery.com/spider">https://d3-graph-gallery.com/spider</a></li></li>
-                <li><a href="https://observablehq.com/@mbostock/d3-force-directed-graph">https://observablehq.com/@mbostock/d3-force-directed-graph</a></li>
-                <li><a href="https://medium.com/ninjaconcept/interactive-dynamic-force-directed-graphs-with-d3-da720c6d7811">https://medium.com/ninjaconcept/interactive-dynamic-force-directed-graphs-with-d3-da720c6d7811</a></li>
-                <li><a href="https://www.d3indepth.com/force-layout">https://www.d3indepth.com/force-layout/</a></li>
-                <li> <a href="https://observablehq.com/@brunolaranjeira/d3-v6-force-directed-graph-with-directional-straight-arrow">https://observablehq.com/@brunolaranjeira/d3-v6-force-directed-graph-with-directional-straight-arrow</a></li>
-                <li><a href="https://freefrontend.com/css-scroll-effects/">https://freefrontend.com/css-scroll-effects/</a></li>
-                <li><a href="https://codepen.io/argyleink/pen/wvMxEXM">https://codepen.io/argyleink/pen/wvMxEXM</a></li>
-                <li><a href="https://alvarotrigo.com/blog/css-text-animations/">https://alvarotrigo.com/blog/css-text-animations/</a></li>
-                <li><a href="https://developer.mozilla.org/en-US/docs/Web/CSS/max-block-size">https://developer.mozilla.org/en-US/docs/Web/CSS/max-block-size</a></li>
-            </ul>
-        </h1>
-    </div>
-    
-    
-    <script type="module" src="js/main.js"></script>
-</body>
-
-</html>
+        </html>
+        
